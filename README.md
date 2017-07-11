@@ -3,4 +3,4 @@
 # TODO:
 -Add gorup memebers to readme.
 
--Reaname repo to the second game you chose.
+-Rename repo to the second game you chose.
