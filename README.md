@@ -2,7 +2,7 @@
 
 # TODO:
 
-- Rename repo to the folowing name: csc412-SecondGameName-TeamNN , where SecondGameName is the name of the game you chose and where nn is your group number.
+- Rename repo to the following name: csc412-SecondGameName-TeamNN, where SecondGameName is the name of the game you chose and where nn is your group number.
 
 - add your team member to the repo, if you are working in pairs.
 
