@@ -18,7 +18,7 @@ public class Driver {
         window.setLocationByPlatform(true);
         window.setVisible(true);
         window.setLocationRelativeTo(null);
-//        lazarus.start();
+        lazarus.start();
         System.out.println("Done");
     }
 }
