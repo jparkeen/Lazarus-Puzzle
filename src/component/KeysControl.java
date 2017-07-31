@@ -1,4 +1,4 @@
-package src.commons;
+package src.component;
 
 import src.core.Lazarus;
 

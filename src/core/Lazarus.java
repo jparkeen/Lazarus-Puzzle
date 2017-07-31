@@ -1,8 +1,8 @@
 package src.core;
 
 import src.commons.Globals;
-import src.commons.KeysControl;
-import src.commons.LazarusObject;
+import src.component.KeysControl;
+import src.component.LazarusObject;
 import src.commons.MapReader;
 
 import javax.swing.*;
