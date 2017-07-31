@@ -9,6 +9,7 @@ import java.awt.event.KeyEvent;
 public class KeysControl extends KeyAdapter {
     private LazarusObject player;
 
+
     public KeysControl(LazarusObject player){
         this.player = player;
     }
@@ -23,6 +24,9 @@ public class KeysControl extends KeyAdapter {
             Lazarus.moveRight = true;
         }
         if(keysCode == KeyEvent.VK_SPACE){
+            Lazarus.startY = player.y;
+            Lazarus.jumpTop = Lazarus.startY - Lazarus.height;
+            Lazarus.movingUp = true;
             Lazarus.jump = true;
         }
     }
@@ -37,7 +41,7 @@ public class KeysControl extends KeyAdapter {
             Lazarus.moveRight = false;
         }
         if(keysCode == KeyEvent.VK_SPACE){
-            Lazarus.jump = false;
+           // Lazarus.jump = false;
         }
     }
 }

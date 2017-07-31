@@ -12,12 +12,13 @@ import java.io.IOException;
 public class Lazarus extends JComponent implements Runnable {
 
     private Thread thread;
-    public static boolean moveLeft,moveRight,jump;
+    public static boolean moveLeft,moveRight,jump ,movingUp;
     private KeysControl keysControl;
     private LazarusObject player;
-    static int startX,startY;
+    public  static int startX,startY;
     int health = 20, lives = 2;
     int count = 0, frame = 1;
+   public static  int  height = 40,jumpTop;
 
     private String[][] map;
 
@@ -44,20 +45,28 @@ public class Lazarus extends JComponent implements Runnable {
 
     public void handleMovement(Graphics g) {
 
-            if (this.moveLeft) {
+            if (Lazarus.moveLeft) {
                 player.x -= Globals.BLOCK_SIZE;
             }
-            if (this.moveRight) {
+            if (Lazarus.moveRight) {
                 player.x += Globals.BLOCK_SIZE;
             }
-            if (this.jump) {
-                count++;
-                if (count == frame) {
-                    player.y -= 5;
-                    count = 0;
-                }
-
+            if (Lazarus.jump) {
+               if(Lazarus.movingUp){
+                   player.y--;
+                   if(player.y == jumpTop){
+                       Lazarus.movingUp = false;
+                       return;
+                   }
+               }
+               if(!Lazarus.movingUp) {
+                   player.y++;
+                   if(player.y == startY){
+                       Lazarus.jump = false;
+                   }
+               }
             }
+
         }
 
     public void renderBackground(Graphics2D g2) {
