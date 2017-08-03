@@ -1,6 +1,7 @@
 package src.component;
 
 import src.commons.Globals;
+import src.commons.MapReader;
 
 import java.io.IOException;
 
@@ -13,7 +14,7 @@ public class CollisionDetector {
     }
 
     public boolean validateCollision(int newX, int newY, LazarusObject lazarus) {
-        return validateBoundaryCollision(newX, newY);
+        return validateBoundaryCollision(newX, newY) || validateWallCollision(newX, newY);
     }
 
     public boolean validateBoundaryCollision(int newX, int newY){
@@ -24,16 +25,16 @@ public class CollisionDetector {
     }
 
 
-//    public boolean validateMapCollision(int newX, int newY){
-//        int mapX = newX / Globals.BLOCK_SIZE;
-//        int mapY = newY / Globals.BLOCK_SIZE;
-//
-//        String value = map[mapY][mapX];
-//
-//        if(value.equals(MapReader.WALL) || value.equals(MapReader.BREAKABLE_WALL)) {
-//            return true;
-//        }
-//        return false;
-//    }
-//
+    public boolean validateWallCollision(int newX, int newY){
+        int mapX = newX / Globals.BLOCK_SIZE;
+        int mapY = newY / Globals.BLOCK_SIZE;
+
+        String value = map[mapY][mapX];
+
+        if(value.equals(MapReader.WALL)) {
+            return true;
+        }
+        return false;
+    }
+
 }
