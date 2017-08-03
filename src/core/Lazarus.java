@@ -23,13 +23,15 @@ public class Lazarus extends JComponent implements Runnable {
 
     private LazarusObject lazarus;
 
-    private ArrayList<Boxes> boxes;
+    private Boxes box;
+
+//    private ArrayList<Boxes> boxes;
 
     public  static int startX,startY;
 
     int health = 20, lives = 2;
 
-    int count = 0, frame = 1;
+//    int count = 0, frame = 1;
 
     public static  int  height = 40,jumpTop;
 
@@ -39,7 +41,7 @@ public class Lazarus extends JComponent implements Runnable {
 
     public Lazarus() throws IOException {
         this.map = MapReader.readMap(Globals.MAP1_FILENAME);
-        this.boxes = new ArrayList<Boxes>(1000);
+//        this.boxes = new ArrayList<Boxes>(1000);
 
         setFocusable(true);
 
@@ -49,7 +51,9 @@ public class Lazarus extends JComponent implements Runnable {
 
         lazarus = new LazarusObject(Lazarus.startX,Lazarus.startY,health,lives,this);
 
-        this.keysControl = new KeysControl(this.lazarus, boxes);
+        box = new Boxes(lazarus.x, 0);
+
+        this.keysControl = new KeysControl(this.lazarus);
         addKeyListener(keysControl);
     }
 
@@ -74,7 +78,7 @@ public class Lazarus extends JComponent implements Runnable {
                 newX = lazarus.x - Globals.BLOCK_SIZE;
                 oldX = lazarus.x;
                 newY = lazarus.y;
-                if (collision.validateCollision(newX, newY, lazarus)) {
+                if (collision.validateCollision(newX, newY)) {
                     lazarus.x = oldX;
                 }else {
                     lazarus.x = newX;
@@ -86,7 +90,7 @@ public class Lazarus extends JComponent implements Runnable {
                 newX = lazarus.x + Globals.BLOCK_SIZE;
                 oldX = lazarus.x;
                 newY = lazarus.y;
-                if (collision.validateCollision(newX, newY, lazarus)) {
+                if (collision.validateCollision(newX, newY)) {
                     lazarus.x = oldX;
                 }else {
                     lazarus.x = newX;
@@ -101,7 +105,7 @@ public class Lazarus extends JComponent implements Runnable {
                    newX = lazarus.x;
                    newY = lazarus.y - Globals.BLOCK_SIZE;
                    oldY = lazarus.y;
-                   if (collision.validateCollision(newX, newY, lazarus)) {
+                   if (collision.validateCollision(newX, newY)) {
                        lazarus.y = oldY;
                    }else {
                        lazarus.y = newY;
@@ -123,25 +127,29 @@ public class Lazarus extends JComponent implements Runnable {
     }
 
     public void renderBoxes(Graphics2D g2) {
-        for (Boxes b : boxes) {
             Image image = Toolkit.getDefaultToolkit().getImage("resources/boxes/cardbox.png");
-            g2.drawImage(image, b.getX(), b.getY(), this);
+            g2.drawImage(image, box.getX(), box.getY(), this);
             g2.finalize();
-        }
     }
 
     public void moveBoxes() {
-        Iterator<Boxes> iter = boxes.iterator();
-
-        while (iter.hasNext()) {
-            Boxes box = iter.next();
-            box.moveBoxes();
-            if (collision.validateBoxestoWallCollision(box)) {
-                iter.remove();
+        if (collision.validateBoxestoWallCollision(box)
+                || collision.validateLazarustoBoxesCollision(box, lazarus)) {
+                box.y = box.getY();
             } else {
                 box.moveBoxes();
             }
-        }
+
+
+//        Iterator<Boxes> iter = boxes.iterator();
+//        while (iter.hasNext()) {
+//            Boxes box = iter.next();
+//            if (collision.validateBoxestoWallCollision(box)) {
+//                iter.remove();
+//            } else {
+//                box.moveBoxes();
+//            }
+//        }
     }
 
     public void renderBackground(Graphics2D g2) {

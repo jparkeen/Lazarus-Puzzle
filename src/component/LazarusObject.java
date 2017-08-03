@@ -15,4 +15,6 @@ public class LazarusObject {
         this.lazarus = lazarus;
     }
 
+
+
 }

@@ -6,7 +6,7 @@ public class Boxes {
 
     private int x;
 
-    private int y;
+    public int y;
 
     public Boxes(int x, int y) {
         this.x = x;
@@ -14,9 +14,14 @@ public class Boxes {
     }
 
     public void moveBoxes() {
-        Point p = getNextPosition();
-        this.x = p.x;
-        this.y = 0;
+        int newX = x;
+        int oldY = y;
+        y = y + Globals.BOX_SPEED;
+
+
+//        Point p = getNextPosition();
+//        this.x = p.x;
+//        this.y = 0;
 //        y += Globals.BLOCK_SIZE;
     }
 
