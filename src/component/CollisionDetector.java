@@ -2,7 +2,6 @@ package src.component;
 
 import src.commons.Globals;
 import src.commons.MapReader;
-
 import java.io.IOException;
 
 public class CollisionDetector {
@@ -24,12 +23,27 @@ public class CollisionDetector {
         return false;
     }
 
-
     public boolean validateWallCollision(int newX, int newY){
         int mapX = newX / Globals.BLOCK_SIZE;
         int mapY = newY / Globals.BLOCK_SIZE;
 
         String value = map[mapY][mapX];
+
+        if(value.equals(MapReader.WALL)) {
+            return true;
+        }
+        return false;
+    }
+
+    public boolean validateBoxestoWallCollision(Boxes box){
+        Point p = box.getNextPosition();
+        int newX = p.x;
+        int newY = p.y;
+
+        int boxX = newX / (Globals.BLOCK_SIZE );
+        int boxY = newY / (Globals.BLOCK_SIZE );
+
+        String value = map[boxY][boxX];
 
         if(value.equals(MapReader.WALL)) {
             return true;

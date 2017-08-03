@@ -11,8 +11,6 @@ public class MapReader {
 	public static String SPACE = "000";
 	
 	public static String LAZARUS = "LAZ";
-	
-//	public static String TANK_2 = "TA2";
 
     public static String STOP = "STP";
 
@@ -33,6 +31,6 @@ public class MapReader {
 		}
 		br.close();
 		return array;
-
 	}
+
 }
