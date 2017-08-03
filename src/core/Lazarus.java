@@ -1,6 +1,7 @@
 package src.core;
 
 import src.commons.Globals;
+import src.component.CollisionDetector;
 import src.component.KeysControl;
 import src.component.LazarusObject;
 import src.commons.MapReader;
@@ -18,13 +19,16 @@ public class Lazarus extends JComponent implements Runnable {
     public  static int startX,startY;
     int health = 20, lives = 2;
     int count = 0, frame = 1;
-   public static  int  height = 40,jumpTop;
+    public static  int  height = 40,jumpTop;
+    private CollisionDetector collision;
 
     private String[][] map;
 
     public Lazarus() throws IOException {
         this.map = MapReader.readMap(Globals.MAP1_FILENAME);
         setFocusable(true);
+
+        collision = new CollisionDetector(map);
         findStartPosition();
 
         player = new LazarusObject(Lazarus.startX,Lazarus.startY,health,lives,this);
@@ -44,16 +48,47 @@ public class Lazarus extends JComponent implements Runnable {
     }
 
     public void handleMovement(Graphics g) {
+            int newX, newY;
+            int oldX, oldY;
 
             if (Lazarus.moveLeft) {
-                player.x -= Globals.BLOCK_SIZE;
+//                player.x -= Globals.BLOCK_SIZE;
+                newX = player.x - Globals.BLOCK_SIZE;
+                oldX = player.x;
+                newY = player.y;
+                if (collision.validateCollision(newX, newY, player)) {
+                    player.x = oldX;
+                }else {
+                    player.x = newX;
+                }
+
             }
             if (Lazarus.moveRight) {
-                player.x += Globals.BLOCK_SIZE;
+//                player.x += Globals.BLOCK_SIZE;
+                newX = player.x + Globals.BLOCK_SIZE;
+                oldX = player.x;
+                newY = player.y;
+                if (collision.validateCollision(newX, newY, player)) {
+                    player.x = oldX;
+                }else {
+                    player.x = newX;
+                }
             }
             if (Lazarus.jump) {
                if(Lazarus.movingUp){
                    player.y--;
+
+                   //collision with boundary
+                   newX = player.x;
+                   newY = player.y - Globals.BLOCK_SIZE;
+                   oldY = player.y;
+                   if (collision.validateCollision(newX, newY, player)) {
+                       player.y = oldY;
+                   }else {
+                       player.y = newY;
+                   }
+
+
                    if(player.y == jumpTop){
                        Lazarus.movingUp = false;
                        return;
@@ -66,7 +101,6 @@ public class Lazarus extends JComponent implements Runnable {
                    }
                }
             }
-
         }
 
     public void renderBackground(Graphics2D g2) {
@@ -101,7 +135,7 @@ public class Lazarus extends JComponent implements Runnable {
                     renderWall(g2, x, y);
                     continue;
                 }
-                if (value.equals(MapReader.BUTTON)) {
+                if (value.equals(MapReader.STOP)) {
                     renderButton(g2, x, y);
                     continue;
                 }
