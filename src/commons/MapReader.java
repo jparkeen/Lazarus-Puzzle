@@ -11,10 +11,8 @@ public class MapReader {
 	public static String SPACE = "000";
 	
 	public static String LAZARUS = "LAZ";
-	
-//	public static String TANK_2 = "TA2";
 
-    public static String BUTTON = "BTN";
+    public static String STOP = "STP";
 
 	public static String[][] readMap(String mapFileName) throws IOException {
 		String[][] array = new String[Globals.MAX_NUMBER_OF_BLOCKS][Globals.MAX_NUMBER_OF_BLOCKS];
@@ -33,6 +31,6 @@ public class MapReader {
 		}
 		br.close();
 		return array;
-
 	}
+
 }

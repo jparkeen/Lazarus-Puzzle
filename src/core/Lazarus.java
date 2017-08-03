@@ -1,6 +1,8 @@
 package src.core;
 
 import src.commons.Globals;
+import src.component.Boxes;
+import src.component.CollisionDetector;
 import src.component.KeysControl;
 import src.component.LazarusObject;
 import src.commons.MapReader;
@@ -8,28 +10,46 @@ import src.commons.MapReader;
 import javax.swing.*;
 import java.awt.*;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Iterator;
 
 public class Lazarus extends JComponent implements Runnable {
 
     private Thread thread;
+
     public static boolean moveLeft,moveRight,jump ,movingUp;
+
     private KeysControl keysControl;
-    private LazarusObject player;
+
+    private LazarusObject lazarus;
+
+    private ArrayList<Boxes> boxes;
+
     public  static int startX,startY;
+
     int health = 20, lives = 2;
+
     int count = 0, frame = 1;
-   public static  int  height = 40,jumpTop;
+
+    public static  int  height = 40,jumpTop;
+
+    private CollisionDetector collision;
 
     private String[][] map;
 
     public Lazarus() throws IOException {
         this.map = MapReader.readMap(Globals.MAP1_FILENAME);
+        this.boxes = new ArrayList<Boxes>(1000);
+
         setFocusable(true);
+
+        collision = new CollisionDetector(map);
+
         findStartPosition();
 
-        player = new LazarusObject(Lazarus.startX,Lazarus.startY,health,lives,this);
+        lazarus = new LazarusObject(Lazarus.startX,Lazarus.startY,health,lives,this);
 
-        this.keysControl = new KeysControl(this.player);
+        this.keysControl = new KeysControl(this.lazarus, boxes);
         addKeyListener(keysControl);
     }
 
@@ -39,35 +59,90 @@ public class Lazarus extends JComponent implements Runnable {
 
         renderBackground(g2);
         renderMap(g2);
-        drawLazarus(g2, player.x, player.y);
+        drawLazarus(g2, lazarus.x, lazarus.y);
+        renderBoxes(g2);
+        moveBoxes();
         handleMovement(g2);
     }
 
     public void handleMovement(Graphics g) {
+            int newX, newY;
+            int oldX, oldY;
 
             if (Lazarus.moveLeft) {
-                player.x -= Globals.BLOCK_SIZE;
+//                player.x -= Globals.BLOCK_SIZE;
+                newX = lazarus.x - Globals.BLOCK_SIZE;
+                oldX = lazarus.x;
+                newY = lazarus.y;
+                if (collision.validateCollision(newX, newY, lazarus)) {
+                    lazarus.x = oldX;
+                }else {
+                    lazarus.x = newX;
+                }
             }
+
             if (Lazarus.moveRight) {
-                player.x += Globals.BLOCK_SIZE;
+//                player.x += Globals.BLOCK_SIZE;
+                newX = lazarus.x + Globals.BLOCK_SIZE;
+                oldX = lazarus.x;
+                newY = lazarus.y;
+                if (collision.validateCollision(newX, newY, lazarus)) {
+                    lazarus.x = oldX;
+                }else {
+                    lazarus.x = newX;
+                }
             }
+
             if (Lazarus.jump) {
                if(Lazarus.movingUp){
-                   player.y--;
-                   if(player.y == jumpTop){
+                   lazarus.y--;
+
+                   //collision with boundary
+                   newX = lazarus.x;
+                   newY = lazarus.y - Globals.BLOCK_SIZE;
+                   oldY = lazarus.y;
+                   if (collision.validateCollision(newX, newY, lazarus)) {
+                       lazarus.y = oldY;
+                   }else {
+                       lazarus.y = newY;
+                   }
+
+
+                   if(lazarus.y == jumpTop){
                        Lazarus.movingUp = false;
                        return;
                    }
                }
                if(!Lazarus.movingUp) {
-                   player.y++;
-                   if(player.y == startY){
+                   lazarus.y++;
+                   if(lazarus.y == startY){
                        Lazarus.jump = false;
                    }
                }
             }
+    }
 
+    public void renderBoxes(Graphics2D g2) {
+        for (Boxes b : boxes) {
+            Image image = Toolkit.getDefaultToolkit().getImage("resources/boxes/cardbox.png");
+            g2.drawImage(image, b.getX(), b.getY(), this);
+            g2.finalize();
         }
+    }
+
+    public void moveBoxes() {
+        Iterator<Boxes> iter = boxes.iterator();
+
+        while (iter.hasNext()) {
+            Boxes box = iter.next();
+            box.moveBoxes();
+            if (collision.validateBoxestoWallCollision(box)) {
+                iter.remove();
+            } else {
+                box.moveBoxes();
+            }
+        }
+    }
 
     public void renderBackground(Graphics2D g2) {
         Image image = Toolkit.getDefaultToolkit().getImage("resources/Background.png");
@@ -75,7 +150,7 @@ public class Lazarus extends JComponent implements Runnable {
         g2.finalize();
     }
 
-    public void findStartPosition(){
+    public void findStartPosition() {
         for (int row = 0; row < Globals.MAX_NUMBER_OF_BLOCKS; row++) {
             for (int col = 0; col < Globals.MAX_NUMBER_OF_BLOCKS; col++) {
                 String value = map[row][col];
@@ -101,7 +176,7 @@ public class Lazarus extends JComponent implements Runnable {
                     renderWall(g2, x, y);
                     continue;
                 }
-                if (value.equals(MapReader.BUTTON)) {
+                if (value.equals(MapReader.STOP)) {
                     renderButton(g2, x, y);
                     continue;
                 }
