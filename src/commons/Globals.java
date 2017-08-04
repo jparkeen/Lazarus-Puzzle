@@ -8,7 +8,7 @@ public class Globals {
 
     public static int MAX_NUMBER_OF_BLOCKS = 16;
 
-//    public static int BULLET_SPEED = 10;
+    public static int BOX_SPEED = 1;
 
     public static String MAP1_FILENAME = "maps/map1.csv";
 
