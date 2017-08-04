@@ -14,7 +14,13 @@ public class MapReader {
 
     public static String STOP = "STP";
 
-    public static String BOX = "BOX";
+    public static String CARDBOARD_BOX = "CBX";
+
+    public static String WOOD_BOX = "WBX";
+
+    public static String STONE_BOX = "SBX";
+
+    public static String METAL_BOX = "MBX";
 
 	public static String[][] readMap(String mapFileName) throws IOException {
 		String[][] array = new String[Globals.MAX_NUMBER_OF_BLOCKS][Globals.MAX_NUMBER_OF_BLOCKS];
