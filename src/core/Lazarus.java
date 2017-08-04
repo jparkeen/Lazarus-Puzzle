@@ -124,6 +124,7 @@ public class Lazarus extends JComponent implements Runnable {
 
                     if (lazarus.y == jumpTop) {
                         Lazarus.movingUp = false;
+
                         return;
                     }
                 }
@@ -152,6 +153,7 @@ public class Lazarus extends JComponent implements Runnable {
 
                     if (lazarus.y == jumpTop) {
                         Lazarus.movingUp = false;
+
 
                         return;
                     }
