@@ -80,7 +80,7 @@ public class LazarusWorld extends JComponent implements Runnable {
                     newY = lazarus.y - Globals.BLOCK_SIZE;
                     oldY = lazarus.y;
 
-                    if (collision.validateCollision(newX, newY)) {
+                    if (collision.validateCollision(newX, newY, boxes)) {
                         lazarus.y = oldY;
 
                     } else {
@@ -107,7 +107,7 @@ public class LazarusWorld extends JComponent implements Runnable {
                     newY = lazarus.y - Globals.BLOCK_SIZE;
                     oldY = lazarus.y;
 
-                    if (collision.validateCollision(newX, newY)) {
+                    if (collision.validateCollision(newX, newY, boxes)) {
                         lazarus.y = oldY;
 
                     } else {
@@ -136,7 +136,7 @@ public class LazarusWorld extends JComponent implements Runnable {
                     newY = lazarus.y - Globals.BLOCK_SIZE;
                     oldY = lazarus.y;
 
-                    if (collision.validateCollision(newX, newY)) {
+                    if (collision.validateCollision(newX, newY, boxes)) {
                         lazarus.y = oldY;
 
                     } else {
@@ -161,7 +161,7 @@ public class LazarusWorld extends JComponent implements Runnable {
                 newX = lazarus.x - Globals.BLOCK_SIZE;
                 oldX = lazarus.x;
                 newY = lazarus.y;
-                if (collision.validateCollision(newX, newY)) {
+                if (collision.validateCollision(newX, newY, boxes)) {
                     lazarus.x = oldX;
                 } else {
                     lazarus.x = newX--;
@@ -177,7 +177,7 @@ public class LazarusWorld extends JComponent implements Runnable {
                 newX = lazarus.x + Globals.BLOCK_SIZE;
                 oldX = lazarus.x;
                 newY = lazarus.y;
-                if (collision.validateCollision(newX, newY)) {
+                if (collision.validateCollision(newX, newY, boxes)) {
                     lazarus.x = oldX;
                 } else {
                     lazarus.x = newX++;

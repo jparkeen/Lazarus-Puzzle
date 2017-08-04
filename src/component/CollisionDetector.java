@@ -4,6 +4,7 @@ import commons.Globals;
 import commons.MapReader;
 
 import java.io.IOException;
+import java.util.ArrayList;
 
 public class CollisionDetector {
 
@@ -13,8 +14,9 @@ public class CollisionDetector {
         this.map = map;
     }
 
-    public boolean validateCollision(int newX, int newY) {
-        return validateLazarusToBoundaryCollision(newX, newY) || validateLazarusToWallCollision(newX, newY);
+    public boolean validateCollision(int newX, int newY, ArrayList<Box> boxes) {
+        return validateLazarusToBoundaryCollision(newX, newY) || validateLazarusToWallCollision(newX, newY)
+                || validateLazarustoBoxesCollision(boxes, newX, newY);
     }
 
     private boolean validateLazarusToBoundaryCollision(int newX, int newY){
@@ -48,38 +50,13 @@ public class CollisionDetector {
         return false;
     }
 
-//    public boolean validateLazarustoBoxesCollision(Boxes box, LazarusObject lazarus){
-////        Point p = box.getNextPosition();
-//        int newMinX = box.getX();
-//        int newMinY = box.y;
-//        int newMaxX = box.getX() + Globals.BLOCK_SIZE;
-//        int newMaxY = box.y + Globals.BLOCK_SIZE;
-//
-//        int minLazX = lazarus.x;
-//        int maxLazX = lazarus.x + Globals.BLOCK_SIZE;
-//        int minLazY = lazarus.y;
-//        int maxLazY = lazarus.y + Globals.BLOCK_SIZE;
-//
-//        if(Lazarus.moveRight) {
-//            return (minLazX < newMaxX && newMaxX < maxLazX && newMinY == minLazY);
-//        }
-//        if(Lazarus.moveLeft) {
-//            return (minLazX < newMinX && newMinX < maxLazX && newMinY == minLazY);
-//        }
-//        return false;
-//
-//
-//
-////        int lazX = lazarus.x;
-////        int lazY = lazarus.y;
-////
-////        if(Lazarus.moveRight){
-////            lazX += Globals.BLOCK_SIZE;
-////            if(lazX == boxX && lazY == boxY) {
-////                return true;
-////            }
-////        }
-////        return false;
-//    }
+    private boolean validateLazarustoBoxesCollision(ArrayList<Box> boxes, int newX, int newY){
+        for(Box box : boxes) {
+            if (newX == box.getX() && newY == box.getY()) {
+                return true;
+            }
+        }
+        return false;
+    }
 
 }
