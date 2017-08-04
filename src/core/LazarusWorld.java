@@ -1,19 +1,18 @@
 package src.core;
 
 import src.commons.Globals;
-import src.component.Boxes;
+import src.component.Box;
 import src.component.CollisionDetector;
 import src.component.KeysControl;
-import src.component.LazarusObject;
+import src.component.Lazarus;
 import src.commons.MapReader;
 
 import javax.swing.*;
 import java.awt.*;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Iterator;
 
-public class Lazarus extends JComponent implements Runnable {
+public class LazarusWorld extends JComponent implements Runnable {
 
     private Thread thread;
 
@@ -21,11 +20,11 @@ public class Lazarus extends JComponent implements Runnable {
 
     private KeysControl keysControl;
 
-    private LazarusObject lazarus;
+    private Lazarus lazarus;
 
-    private Boxes box;
+    private Box box;
 
-//    private ArrayList<Boxes> boxes;
+    private ArrayList<Box> boxes;
 
     public  static int startX,startY;
 
@@ -39,9 +38,9 @@ public class Lazarus extends JComponent implements Runnable {
 
     private String[][] map;
 
-    public Lazarus() throws IOException {
+    public LazarusWorld() throws IOException {
         this.map = MapReader.readMap(Globals.MAP1_FILENAME);
-//        this.boxes = new ArrayList<Boxes>(1000);
+        this.boxes = new ArrayList<Box>(1000);
 
         setFocusable(true);
 
@@ -49,23 +48,21 @@ public class Lazarus extends JComponent implements Runnable {
 
         findStartPosition();
 
-        lazarus = new LazarusObject(Lazarus.startX,Lazarus.startY,health,lives,this);
+        lazarus = new Lazarus(startX, startY, health, lives,this);
 
-        box = new Boxes(lazarus.x, 0);
+        addBoxestoArraylist();
 
         this.keysControl = new KeysControl(this.lazarus);
         addKeyListener(keysControl);
     }
 
     public void paint(Graphics g) {
-
         Graphics2D g2 = (Graphics2D) g;
-
         renderBackground(g2);
         renderMap(g2);
         drawLazarus(g2, lazarus.x, lazarus.y);
-        renderBoxes(g2);
         moveBoxes();
+        renderBoxes(g2);
         handleMovement(g2);
     }
 
@@ -73,10 +70,9 @@ public class Lazarus extends JComponent implements Runnable {
         int newX, newY;
         int oldX, oldY;
 
-
-        if (Lazarus.jump) {
-            if (Lazarus.jumpingLeft) {
-                if (Lazarus.movingUp) {
+        if (jump) {
+            if (jumpingLeft) {
+                if (movingUp) {
 
                     //collision with boundary
                     newX = lazarus.x;
@@ -92,21 +88,18 @@ public class Lazarus extends JComponent implements Runnable {
                     }
 
                     if (lazarus.y == jumpTop) {
-                        Lazarus.movingUp = false;
-
+                        movingUp = false;
                         return;
                     }
                 }
-                if (!Lazarus.movingUp) {
+                if (!movingUp) {
                     lazarus.y++;
                     if (lazarus.y == startY) {
-
-                        Lazarus.jump = false;
-
+                        jump = false;
                     }
                 }
-            } else if (Lazarus.jumpingRight) {
-                if (Lazarus.movingUp) {
+            } else if (jumpingRight) {
+                if (movingUp) {
 
                     //collision with boundary
                     newX = lazarus.x;
@@ -123,20 +116,19 @@ public class Lazarus extends JComponent implements Runnable {
                     }
 
                     if (lazarus.y == jumpTop) {
-                        Lazarus.movingUp = false;
 
+                        LazarusWorld.movingUp = false;
                         return;
                     }
                 }
-                if (!Lazarus.movingUp) {
+                if (!movingUp) {
                     lazarus.y++;
                     if (lazarus.y == startY) {
-                        Lazarus.jump = false;
-
+                        jump = false;
                     }
                 }
             } else {
-                if (Lazarus.movingUp) {
+                if (movingUp) {
 
                     //collision with boundary
                     newX = lazarus.x;
@@ -148,28 +140,23 @@ public class Lazarus extends JComponent implements Runnable {
 
                     } else {
                         lazarus.y = newY--;
-
                     }
 
                     if (lazarus.y == jumpTop) {
-                        Lazarus.movingUp = false;
-
-
+                        LazarusWorld.movingUp = false;
                         return;
                     }
                 }
-                if (!Lazarus.movingUp) {
+                if (!movingUp) {
                     lazarus.y++;
                     if (lazarus.y == startY) {
-
-                        Lazarus.jump = false;
-
+                        jump = false;
                     }
                 }
             }
         }
-        if (Lazarus.moveLeft) {
-            if (Lazarus.movingLeft) {
+        if (moveLeft) {
+            if (movingLeft) {
                 newX = lazarus.x - Globals.BLOCK_SIZE;
                 oldX = lazarus.x;
                 newY = lazarus.y;
@@ -178,14 +165,14 @@ public class Lazarus extends JComponent implements Runnable {
                 } else {
                     lazarus.x = newX--;
                     if (lazarus.x == endLeft) {
-                        Lazarus.movingLeft = false;
+                        movingLeft = false;
                         return;
                     }
                 }
             }
         }
-        if (Lazarus.moveRight) {
-            if (Lazarus.movingRight) {
+        if (moveRight) {
+            if (movingRight) {
                 newX = lazarus.x + Globals.BLOCK_SIZE;
                 oldX = lazarus.x;
                 newY = lazarus.y;
@@ -194,7 +181,7 @@ public class Lazarus extends JComponent implements Runnable {
                 } else {
                     lazarus.x = newX++;
                     if (lazarus.x == endRight) {
-                        Lazarus.movingRight = false;
+                        movingRight = false;
                         return;
                     }
                 }
@@ -203,29 +190,27 @@ public class Lazarus extends JComponent implements Runnable {
     }
 
     public void renderBoxes(Graphics2D g2) {
+        for(Box box : boxes) {
             Image image = Toolkit.getDefaultToolkit().getImage("resources/boxes/cardbox.png");
-            g2.drawImage(image, box.getX(), box.getY(), this);
+            g2.drawImage(image, box.getX(), box.getY(), Globals.BLOCK_SIZE, Globals.BLOCK_SIZE,this);
             g2.finalize();
+        }
     }
 
     public void moveBoxes() {
-        if (collision.validateBoxestoWallCollision(box)
-                || collision.validateLazarustoBoxesCollision(box, lazarus)) {
-                box.y = box.getY();
-            } else {
-                box.moveBoxes();
+        // Stop moving boxes that have collided with the wall
+        for(Box box: boxes) {
+            if (collision.validateBoxToWallCollision(box)) {
+                box.stopMoving();
+                continue;
             }
 
+            box.moveBoxDown();
+        }
+    }
 
-//        Iterator<Boxes> iter = boxes.iterator();
-//        while (iter.hasNext()) {
-//            Boxes box = iter.next();
-//            if (collision.validateBoxestoWallCollision(box)) {
-//                iter.remove();
-//            } else {
-//                box.moveBoxes();
-//            }
-//        }
+    private void addBoxestoArraylist(){
+        boxes.add(new Box(lazarus.x, 0));
     }
 
     public void renderBackground(Graphics2D g2) {
@@ -241,8 +226,8 @@ public class Lazarus extends JComponent implements Runnable {
                 int y = row * Globals.BLOCK_SIZE;
                 int x = col * Globals.BLOCK_SIZE;
                 if (value.equals(MapReader.LAZARUS)) {
-                    Lazarus.startX = x;
-                    Lazarus.startY = y;
+                    startX = x;
+                    startY = y;
                     continue;
                 }
             }
@@ -269,8 +254,8 @@ public class Lazarus extends JComponent implements Runnable {
                     continue;
                 }
                 if (value.equals(MapReader.LAZARUS)) {
-                    Lazarus.startX = x;
-                    Lazarus.startY = y;
+                    startX = x;
+                    startY = y;
                     continue;
                 }
             }

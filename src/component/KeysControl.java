@@ -1,14 +1,15 @@
 package src.component;
 
-import src.core.Lazarus;
+import src.core.LazarusWorld;
+
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 
 public class KeysControl extends KeyAdapter {
 
-    private LazarusObject player;
+    private Lazarus player;
 
-    public KeysControl(LazarusObject player) {
+    public KeysControl(Lazarus player) {
         this.player = player;
     }
 
@@ -16,36 +17,37 @@ public class KeysControl extends KeyAdapter {
 
         int keysCode = e.getKeyCode();
 
-        if (keysCode == KeyEvent.VK_LEFT && !Lazarus.moveLeft) {
-            Lazarus.startX = player.x;
-            Lazarus.endLeft = Lazarus.startX - Lazarus.width;
-            Lazarus.movingLeft = true;
 
-            Lazarus.moveLeft = true;
-        }
-        if (keysCode == KeyEvent.VK_RIGHT && !Lazarus.moveRight) {
-            Lazarus.startX = player.x;
-            Lazarus.endRight = Lazarus.startX + Lazarus.width;
-            Lazarus.movingRight = true;
-
-            Lazarus.moveRight = true;
+        if (keysCode == KeyEvent.VK_LEFT && !LazarusWorld.moveLeft) {
+            LazarusWorld.startX = player.x;
+            LazarusWorld.endLeft = LazarusWorld.startX - LazarusWorld.width;
+            LazarusWorld.movingLeft = true;
+            LazarusWorld.moveLeft = true;
         }
 
-        if (keysCode == KeyEvent.VK_SPACE && !Lazarus.jump) {
-            Lazarus.startY = player.y;
-            Lazarus.jumpTop = Lazarus.startY - Lazarus.height;
+        if (keysCode == KeyEvent.VK_RIGHT && !LazarusWorld.moveRight) {
+            LazarusWorld.startX = player.x;
+            LazarusWorld.endRight = LazarusWorld.startX + LazarusWorld.width;
+            LazarusWorld.movingRight = true;
+            LazarusWorld.moveRight = true;
+        }
 
-            Lazarus.movingUp = true;
-            Lazarus.jump = true;
+        if (keysCode == KeyEvent.VK_SPACE && !LazarusWorld.jump) {
+            LazarusWorld.startY = player.y;
+            LazarusWorld.jumpTop = LazarusWorld.startY - LazarusWorld.height;
+            LazarusWorld.movingUp = true;
+            LazarusWorld.jump = true;
 
-                if (Lazarus.jump && Lazarus.movingLeft) {
-                    Lazarus.jumpingLeft = true;
+
+                if (LazarusWorld.jump && LazarusWorld.movingLeft) {
+
+                    LazarusWorld.jumpingLeft = true;
                 }
-                else if (Lazarus.jump && Lazarus.moveRight){
-                    Lazarus.jumpingRight = true;
+                else if (LazarusWorld.jump && LazarusWorld.moveRight){
+                    LazarusWorld.jumpingRight = true;
                 }
                 else {
-                    Lazarus.jump = true;
+                    LazarusWorld.jump = true;
                 }
             }
         }
@@ -55,13 +57,13 @@ public class KeysControl extends KeyAdapter {
         int keysCode = e.getKeyCode();
 
         if (keysCode == KeyEvent.VK_LEFT){
-           Lazarus.moveLeft = false;
+            LazarusWorld.moveLeft = false;
         }
         if(keysCode == KeyEvent.VK_RIGHT){
-            Lazarus.moveRight = false;
+            LazarusWorld.moveRight = false;
         }
         if(keysCode == KeyEvent.VK_SPACE){
-            //Lazarus.jump = false;
+            //LazarusWorld.jump = false;
         }
     }
 
