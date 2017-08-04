@@ -12,6 +12,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Random;
 import java.util.Timer;
 
 public class LazarusWorld extends JComponent implements Runnable {
@@ -190,9 +191,20 @@ public class LazarusWorld extends JComponent implements Runnable {
     }
 
     public void renderBoxes(Graphics2D g2) {
+        Image image = null;
         for(Box box : boxes) {
-            Image image = Toolkit.getDefaultToolkit().getImage("resources/boxes/cardbox.png");
-            g2.drawImage(image, box.getX(), box.getY(), Globals.BLOCK_SIZE, Globals.BLOCK_SIZE,this);
+            if(box.getBoxType().equals(MapReader.CARDBOARD_BOX)) {
+                image = Toolkit.getDefaultToolkit().getImage("resources/boxes/cardbox.png");
+            } else if(box.getBoxType().equals(MapReader.WOOD_BOX)) {
+                image = Toolkit.getDefaultToolkit().getImage("resources/boxes/woodbox.png");
+            } else if(box.getBoxType().equals(MapReader.STONE_BOX)) {
+                image = Toolkit.getDefaultToolkit().getImage("resources/boxes/stonebox.png");
+            } else if(box.getBoxType().equals(MapReader.METAL_BOX)) {
+                image = Toolkit.getDefaultToolkit().getImage("resources/boxes/metalbox.png");
+            } else {
+                System.err.println("Unknown Block Type : " + box.getBoxType());
+            }
+            g2.drawImage(image, box.getX(), box.getY(), Globals.BLOCK_SIZE, Globals.BLOCK_SIZE, this);
             g2.finalize();
         }
     }
@@ -202,7 +214,15 @@ public class LazarusWorld extends JComponent implements Runnable {
         for(Box box: boxes) {
             if (collision.validateBoxToWallCollision(box)) {
                 box.stopMoving();
-                MapReader.BOX = map[box.getY() / Globals.BLOCK_SIZE][box.getX() / Globals.BLOCK_SIZE];
+                if(box.getBoxType().equals(MapReader.CARDBOARD_BOX)) {
+                    map[box.getY() / Globals.BLOCK_SIZE][box.getX() / Globals.BLOCK_SIZE] = MapReader.CARDBOARD_BOX;
+                } else if(box.getBoxType().equals(MapReader.WOOD_BOX)) {
+                    map[box.getY() / Globals.BLOCK_SIZE][box.getX() / Globals.BLOCK_SIZE] = MapReader.WOOD_BOX;
+                } else if(box.getBoxType().equals(MapReader.STONE_BOX)) {
+                    map[box.getY() / Globals.BLOCK_SIZE][box.getX() / Globals.BLOCK_SIZE] = MapReader.STONE_BOX;
+                } else if(box.getBoxType().equals(MapReader.METAL_BOX)) {
+                    map[box.getY() / Globals.BLOCK_SIZE][box.getX() / Globals.BLOCK_SIZE] = MapReader.METAL_BOX;
+                }
                 continue;
             }
             box.moveBoxDown();
@@ -294,6 +314,7 @@ public class LazarusWorld extends JComponent implements Runnable {
         thread.setPriority(Thread.MIN_PRIORITY);
         thread.start();
 
+         // Spawn boxes by using timer
         Timer timer = new Timer();
         timer.schedule(new SpawnBoxes(boxes, lazarus), 0, 3000);
     }

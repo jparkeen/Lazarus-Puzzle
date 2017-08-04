@@ -19,10 +19,13 @@ public class Box {
      */
     private boolean moving;
 
-    public Box(int x, int y) {
+    private String type;
+
+    public Box(int x, int y, String type) {
         this.x = x;
         this.y = y;
         this.moving = true;
+        this.type = type;
     }
 
     public void moveBoxDown() {
@@ -49,6 +52,10 @@ public class Box {
 
     public void stopMoving() {
         moving = false;
+    }
+
+    public String getBoxType() {
+        return type;
     }
 
 }
