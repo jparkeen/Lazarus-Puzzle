@@ -19,6 +19,8 @@ public class Box {
      */
     private boolean moving;
 
+    private boolean type;
+
     public Box(int x, int y) {
         this.x = x;
         this.y = y;

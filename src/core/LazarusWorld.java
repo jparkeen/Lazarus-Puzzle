@@ -1,6 +1,7 @@
 package src.core;
 
 import src.commons.Globals;
+import src.commons.SpawnBoxes;
 import src.component.Box;
 import src.component.CollisionDetector;
 import src.component.KeysControl;
@@ -11,6 +12,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Timer;
 
 public class LazarusWorld extends JComponent implements Runnable {
 
@@ -22,15 +24,11 @@ public class LazarusWorld extends JComponent implements Runnable {
 
     private Lazarus lazarus;
 
-    private Box box;
-
     private ArrayList<Box> boxes;
 
     public  static int startX,startY;
 
     int health = 20, lives = 2;
-
-//    int count = 0, frame = 1;
 
     public static  int width = 50, height = 50,jumpTop,endLeft,endRight;
 
@@ -50,19 +48,21 @@ public class LazarusWorld extends JComponent implements Runnable {
 
         lazarus = new Lazarus(startX, startY, health, lives,this);
 
-        addBoxestoArraylist();
-
         this.keysControl = new KeysControl(this.lazarus);
         addKeyListener(keysControl);
     }
 
     public void paint(Graphics g) {
         Graphics2D g2 = (Graphics2D) g;
+
         renderBackground(g2);
         renderMap(g2);
+
         drawLazarus(g2, lazarus.x, lazarus.y);
+
         moveBoxes();
         renderBoxes(g2);
+
         handleMovement(g2);
     }
 
@@ -202,15 +202,12 @@ public class LazarusWorld extends JComponent implements Runnable {
         for(Box box: boxes) {
             if (collision.validateBoxToWallCollision(box)) {
                 box.stopMoving();
+//                System.out.println("Y: " + box.getY() + "X: " + box.getX() + "\n");
+                MapReader.BOX = map[box.getY() / Globals.BLOCK_SIZE][box.getX() / Globals.BLOCK_SIZE];
                 continue;
             }
-
             box.moveBoxDown();
         }
-    }
-
-    private void addBoxestoArraylist(){
-        boxes.add(new Box(lazarus.x, 0));
     }
 
     public void renderBackground(Graphics2D g2) {
@@ -297,6 +294,9 @@ public class LazarusWorld extends JComponent implements Runnable {
         thread = new Thread(this);
         thread.setPriority(Thread.MIN_PRIORITY);
         thread.start();
+
+        Timer timer = new Timer();
+        timer.schedule(new SpawnBoxes(boxes, lazarus), 0, 3000);
     }
 
 }
