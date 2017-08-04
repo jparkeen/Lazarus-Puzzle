@@ -1,6 +1,6 @@
-package src.component;
+package component;
 
-import src.commons.Globals;
+import commons.Globals;
 
 public class Box {
 

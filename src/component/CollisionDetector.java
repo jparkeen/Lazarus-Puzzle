@@ -1,7 +1,7 @@
-package src.component;
+package component;
 
-import src.commons.Globals;
-import src.commons.MapReader;
+import commons.Globals;
+import commons.MapReader;
 
 import java.io.IOException;
 

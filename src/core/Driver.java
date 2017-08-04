@@ -1,6 +1,6 @@
-package src.core;
+package core;
 
-import src.commons.Globals;
+import commons.Globals;
 
 import javax.swing.*;
 import java.io.IOException;

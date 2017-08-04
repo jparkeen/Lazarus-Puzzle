@@ -1,6 +1,6 @@
-package src.component;
+package component;
 
-import src.core.LazarusWorld;
+import core.LazarusWorld;
 
 public class Lazarus {
 

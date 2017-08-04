@@ -1,6 +1,6 @@
-package src.component;
+package component;
 
-import src.core.LazarusWorld;
+import core.LazarusWorld;
 
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;

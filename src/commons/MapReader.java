@@ -1,4 +1,4 @@
-package src.commons;
+package commons;
 
 import java.io.BufferedReader;
 import java.io.FileReader;

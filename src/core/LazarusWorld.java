@@ -1,11 +1,11 @@
-package src.core;
+package core;
 
-import src.commons.Globals;
-import src.component.Box;
-import src.component.CollisionDetector;
-import src.component.KeysControl;
-import src.component.Lazarus;
-import src.commons.MapReader;
+import commons.Globals;
+import component.Box;
+import component.CollisionDetector;
+import component.KeysControl;
+import component.Lazarus;
+import commons.MapReader;
 
 import javax.swing.*;
 import java.awt.*;
