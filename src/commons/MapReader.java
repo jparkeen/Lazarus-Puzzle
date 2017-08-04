@@ -14,8 +14,6 @@ public class MapReader {
 
     public static String STOP = "STP";
 
-    public static String BOX = "BOX";
-
 	public static String[][] readMap(String mapFileName) throws IOException {
 		String[][] array = new String[Globals.MAX_NUMBER_OF_BLOCKS][Globals.MAX_NUMBER_OF_BLOCKS];
 		CommonAPIs.validateFileExists(mapFileName);
