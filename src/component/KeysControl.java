@@ -21,16 +21,25 @@ public class KeysControl extends KeyAdapter {
         int keysCode = e.getKeyCode();
 
         if (keysCode == KeyEvent.VK_LEFT){
+            Lazarus.startX = player.x;
+            Lazarus.endLeft = Lazarus.startX - Lazarus.width;
+            Lazarus.movingLeft = true;
+
             Lazarus.moveLeft = true;
             boxes.add(new Boxes(player.x, player.y));
         }
         if(keysCode == KeyEvent.VK_RIGHT){
+            Lazarus.startX = player.x;
+            Lazarus.endRight = Lazarus.startX + Lazarus.width;
+            Lazarus.movingRight = true;
+
             Lazarus.moveRight = true;
             boxes.add(new Boxes(player.x, player.y));
         }
         if(keysCode == KeyEvent.VK_SPACE){
             Lazarus.startY = player.y;
             Lazarus.jumpTop = Lazarus.startY - Lazarus.height;
+
             Lazarus.movingUp = true;
             Lazarus.jump = true;
         }
@@ -40,13 +49,13 @@ public class KeysControl extends KeyAdapter {
         int keysCode = e.getKeyCode();
 
         if (keysCode == KeyEvent.VK_LEFT){
-            Lazarus.moveLeft = false;
+           Lazarus.moveLeft = false;
         }
         if(keysCode == KeyEvent.VK_RIGHT){
             Lazarus.moveRight = false;
         }
         if(keysCode == KeyEvent.VK_SPACE){
-           // Lazarus.jump = false;
+            //Lazarus.jump = false;
         }
     }
 

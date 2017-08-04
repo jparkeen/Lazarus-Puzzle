@@ -17,7 +17,7 @@ public class Lazarus extends JComponent implements Runnable {
 
     private Thread thread;
 
-    public static boolean moveLeft,moveRight,jump ,movingUp;
+    public static boolean moveLeft,moveRight,jump ,movingUp,movingLeft,movingRight;
 
     private KeysControl keysControl;
 
@@ -31,7 +31,7 @@ public class Lazarus extends JComponent implements Runnable {
 
     int count = 0, frame = 1;
 
-    public static  int  height = 40,jumpTop;
+    public static  int width = 50, height = 50,jumpTop,endLeft,endRight;
 
     private CollisionDetector collision;
 
@@ -66,61 +66,72 @@ public class Lazarus extends JComponent implements Runnable {
     }
 
     public void handleMovement(Graphics g) {
-            int newX, newY;
-            int oldX, oldY;
+        int newX, newY;
+        int oldX, oldY;
 
-            if (Lazarus.moveLeft) {
-//                player.x -= Globals.BLOCK_SIZE;
+        if (Lazarus.moveLeft) {
+            if (Lazarus.movingLeft) {
                 newX = lazarus.x - Globals.BLOCK_SIZE;
                 oldX = lazarus.x;
                 newY = lazarus.y;
                 if (collision.validateCollision(newX, newY, lazarus)) {
                     lazarus.x = oldX;
-                }else {
+                } else {
                     lazarus.x = newX;
+                    if (lazarus.x == endLeft) {
+                        Lazarus.movingLeft = false;
+                        return;
+                    }
                 }
             }
-
-            if (Lazarus.moveRight) {
-//                player.x += Globals.BLOCK_SIZE;
+        }
+        if (Lazarus.moveRight) {
+            if (Lazarus.movingRight) {
                 newX = lazarus.x + Globals.BLOCK_SIZE;
                 oldX = lazarus.x;
                 newY = lazarus.y;
                 if (collision.validateCollision(newX, newY, lazarus)) {
                     lazarus.x = oldX;
-                }else {
+                } else {
                     lazarus.x = newX;
+                    if (lazarus.x == endRight) {
+                        Lazarus.movingRight = false;
+                        return;
+                    }
                 }
             }
+        }
 
-            if (Lazarus.jump) {
-               if(Lazarus.movingUp){
-                   lazarus.y--;
+        if (Lazarus.jump ) {
+            if (Lazarus.movingUp) {
 
-                   //collision with boundary
-                   newX = lazarus.x;
-                   newY = lazarus.y - Globals.BLOCK_SIZE;
-                   oldY = lazarus.y;
-                   if (collision.validateCollision(newX, newY, lazarus)) {
-                       lazarus.y = oldY;
-                   }else {
-                       lazarus.y = newY;
-                   }
+                //collision with boundary
+                newX = lazarus.x;
+                newY = lazarus.y - Globals.BLOCK_SIZE;
+                oldY = lazarus.y;
+                if (collision.validateCollision(newX, newY, lazarus)) {
+                    lazarus.y = oldY;
+                } else {
+                    lazarus.y = newY--;
+                }
 
 
-                   if(lazarus.y == jumpTop){
-                       Lazarus.movingUp = false;
-                       return;
-                   }
-               }
-               if(!Lazarus.movingUp) {
-                   lazarus.y++;
-                   if(lazarus.y == startY){
-                       Lazarus.jump = false;
-                   }
-               }
+                if (lazarus.y == jumpTop) {
+                    Lazarus.movingUp = false;
+                    return;
+                }
             }
+            if (!Lazarus.movingUp) {
+                lazarus.y++;
+                if (lazarus.y == startY) {
+                    Lazarus.jump = false;
+
+                }
+            }
+        }
     }
+
+
 
     public void renderBoxes(Graphics2D g2) {
         for (Boxes b : boxes) {
@@ -206,6 +217,7 @@ public class Lazarus extends JComponent implements Runnable {
     }
 
     private void drawLazarus(Graphics2D g2, int x, int y) {
+
         Image image = Toolkit.getDefaultToolkit().getImage("resources/lazarus/Lazarus_stand.png");
         g2.drawImage(image, x, y, Globals.BLOCK_SIZE, Globals.BLOCK_SIZE, this);
         g2.finalize();
