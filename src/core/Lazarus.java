@@ -17,7 +17,7 @@ public class Lazarus extends JComponent implements Runnable {
 
     private Thread thread;
 
-    public static boolean moveLeft,moveRight,jump ,movingUp,movingLeft,movingRight;
+    public static boolean moveLeft,moveRight,jump ,movingUp,movingLeft,movingRight,jumpingLeft,jumpingRight;
 
     private KeysControl keysControl;
 
@@ -73,6 +73,99 @@ public class Lazarus extends JComponent implements Runnable {
         int newX, newY;
         int oldX, oldY;
 
+
+        if (Lazarus.jump) {
+            if (Lazarus.jumpingLeft) {
+                if (Lazarus.movingUp) {
+
+                    //collision with boundary
+                    newX = lazarus.x;
+                    newY = lazarus.y - Globals.BLOCK_SIZE;
+                    oldY = lazarus.y;
+
+                    if (collision.validateCollision(newX, newY)) {
+                        lazarus.y = oldY;
+
+                    } else {
+                        lazarus.y = newY--;
+                        lazarus.x = newX--;
+                    }
+
+                    if (lazarus.y == jumpTop) {
+                        Lazarus.movingUp = false;
+
+                        return;
+                    }
+                }
+                if (!Lazarus.movingUp) {
+                    lazarus.y++;
+                    if (lazarus.y == startY) {
+
+                        Lazarus.jump = false;
+
+                    }
+                }
+            } else if (Lazarus.jumpingRight) {
+                if (Lazarus.movingUp) {
+
+                    //collision with boundary
+                    newX = lazarus.x;
+                    newY = lazarus.y - Globals.BLOCK_SIZE;
+                    oldY = lazarus.y;
+
+                    if (collision.validateCollision(newX, newY)) {
+                        lazarus.y = oldY;
+
+                    } else {
+                        lazarus.y = newY--;
+                        lazarus.x = newX++;
+
+                    }
+
+                    if (lazarus.y == jumpTop) {
+                        Lazarus.movingUp = false;
+                        return;
+                    }
+                }
+                if (!Lazarus.movingUp) {
+                    lazarus.y++;
+                    if (lazarus.y == startY) {
+                        Lazarus.jump = false;
+
+                    }
+                }
+            } else {
+                if (Lazarus.movingUp) {
+
+                    //collision with boundary
+                    newX = lazarus.x;
+                    newY = lazarus.y - Globals.BLOCK_SIZE;
+                    oldY = lazarus.y;
+
+                    if (collision.validateCollision(newX, newY)) {
+                        lazarus.y = oldY;
+
+                    } else {
+                        lazarus.y = newY--;
+
+                    }
+
+                    if (lazarus.y == jumpTop) {
+                        Lazarus.movingUp = false;
+
+                        return;
+                    }
+                }
+                if (!Lazarus.movingUp) {
+                    lazarus.y++;
+                    if (lazarus.y == startY) {
+
+                        Lazarus.jump = false;
+
+                    }
+                }
+            }
+        }
         if (Lazarus.moveLeft) {
             if (Lazarus.movingLeft) {
                 newX = lazarus.x - Globals.BLOCK_SIZE;
@@ -81,7 +174,7 @@ public class Lazarus extends JComponent implements Runnable {
                 if (collision.validateCollision(newX, newY)) {
                     lazarus.x = oldX;
                 } else {
-                    lazarus.x = newX;
+                    lazarus.x = newX--;
                     if (lazarus.x == endLeft) {
                         Lazarus.movingLeft = false;
                         return;
@@ -97,7 +190,7 @@ public class Lazarus extends JComponent implements Runnable {
                 if (collision.validateCollision(newX, newY)) {
                     lazarus.x = oldX;
                 } else {
-                    lazarus.x = newX;
+                    lazarus.x = newX++;
                     if (lazarus.x == endRight) {
                         Lazarus.movingRight = false;
                         return;
@@ -105,36 +198,7 @@ public class Lazarus extends JComponent implements Runnable {
                 }
             }
         }
-
-        if (Lazarus.jump) {
-            if (Lazarus.movingUp) {
-
-                //collision with boundary
-                newX = lazarus.x;
-                newY = lazarus.y - Globals.BLOCK_SIZE;
-                oldY = lazarus.y;
-                if (collision.validateCollision(newX, newY)) {
-                    lazarus.y = oldY;
-                } else {
-                    lazarus.y = newY--;
-                }
-
-
-                if (lazarus.y == jumpTop) {
-                    Lazarus.movingUp = false;
-                    return;
-                }
-            }
-            if (!Lazarus.movingUp) {
-                lazarus.y++;
-                if (lazarus.y == startY) {
-                    Lazarus.jump = false;
-
-                }
-            }
-        }
     }
-
 
     public void renderBoxes(Graphics2D g2) {
             Image image = Toolkit.getDefaultToolkit().getImage("resources/boxes/cardbox.png");
