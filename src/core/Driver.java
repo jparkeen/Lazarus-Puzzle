@@ -8,7 +8,7 @@ import java.io.IOException;
 public class Driver {
 
     public static void main(String[] args) throws IOException {
-        Lazarus lazarus = new Lazarus();
+        LazarusWorld lazarus = new LazarusWorld();
         JFrame window = new JFrame();
         window.setTitle("Lazarus!!!");
         window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
