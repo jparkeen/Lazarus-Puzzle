@@ -1,6 +1,7 @@
 package core;
 
 import commons.Globals;
+import commons.SpawnBoxes;
 import component.Box;
 import component.CollisionDetector;
 import component.KeysControl;
@@ -11,6 +12,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Timer;
 
 public class LazarusWorld extends JComponent implements Runnable {
 
@@ -22,7 +24,7 @@ public class LazarusWorld extends JComponent implements Runnable {
 
     private Lazarus lazarus;
 
-    private Box box;
+//    private Box box;
 
     private ArrayList<Box> boxes;
 
@@ -49,8 +51,6 @@ public class LazarusWorld extends JComponent implements Runnable {
         findStartPosition();
 
         lazarus = new Lazarus(startX, startY, health, lives,this);
-
-        addBoxestoArraylist();
 
         this.keysControl = new KeysControl(this.lazarus);
         addKeyListener(keysControl);
@@ -202,15 +202,11 @@ public class LazarusWorld extends JComponent implements Runnable {
         for(Box box: boxes) {
             if (collision.validateBoxToWallCollision(box)) {
                 box.stopMoving();
+                MapReader.BOX = map[box.getY() / Globals.BLOCK_SIZE][box.getX() / Globals.BLOCK_SIZE];
                 continue;
             }
-
             box.moveBoxDown();
         }
-    }
-
-    private void addBoxestoArraylist(){
-        boxes.add(new Box(lazarus.x, 0));
     }
 
     public void renderBackground(Graphics2D g2) {
@@ -297,6 +293,9 @@ public class LazarusWorld extends JComponent implements Runnable {
         thread = new Thread(this);
         thread.setPriority(Thread.MIN_PRIORITY);
         thread.start();
+
+        Timer timer = new Timer();
+        timer.schedule(new SpawnBoxes(boxes, lazarus), 0, 3000);
     }
 
 }
