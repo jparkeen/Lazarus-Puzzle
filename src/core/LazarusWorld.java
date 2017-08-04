@@ -130,7 +130,7 @@ public class LazarusWorld extends JComponent implements Runnable {
             } else {
                 if (movingUp) {
 
-                    //collision with boundary
+
                     newX = lazarus.x;
                     newY = lazarus.y - Globals.BLOCK_SIZE;
                     oldY = lazarus.y;
