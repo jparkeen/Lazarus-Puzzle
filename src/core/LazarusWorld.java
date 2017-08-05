@@ -78,13 +78,19 @@ public class LazarusWorld extends JComponent implements Runnable {
 
 
   public void handleMovement(Graphics g){
-      int newX, newY;
+      int newX;
 
    if(moveRight) {
       if (movingRight) {
            newX = lazarus.x + Globals.BLOCK_SIZE;
 
-           // if there is collision then  lazarus moves up one box at a time
+           // lazarus can't move up if there is more than one box
+           if(collision.validateLazarusCollision(newX,lazarus.y - Globals.BLOCK_SIZE)){
+               movingRight = false;
+               return;
+
+           }
+          // if there is collision then  lazarus moves up one box at a time
            if (collision.validateLazarusCollision(newX, lazarus.y)) {
                lazarus.y = lazarus.y - Globals.BLOCK_SIZE;
                lazarus.x = newX;
@@ -106,6 +112,12 @@ public class LazarusWorld extends JComponent implements Runnable {
     if (moveLeft) {
         if (movingLeft) {
             newX = lazarus.x - Globals.BLOCK_SIZE;
+
+            if(collision.validateLazarusCollision(newX,lazarus.y - Globals.BLOCK_SIZE)){
+                movingLeft = false;
+                return;
+
+            }
 
             if (collision.validateLazarusCollision(newX, lazarus.y)) {
                 lazarus.y = lazarus.y - Globals.BLOCK_SIZE;

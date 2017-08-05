@@ -19,7 +19,7 @@ public class KeysControl extends KeyAdapter {
         int keysCode = e.getKeyCode();
 
 
-        if (keysCode == KeyEvent.VK_LEFT    ) {
+        if (keysCode == KeyEvent.VK_LEFT ) {
             LazarusWorld.startX = player.x;
             LazarusWorld.endLeft = LazarusWorld.startX - LazarusWorld.width;
             LazarusWorld.movingLeft = true;
