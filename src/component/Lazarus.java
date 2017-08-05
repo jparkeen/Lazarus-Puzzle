@@ -20,6 +20,4 @@ public class Lazarus {
         this.lazarus = lazarus;
     }
 
-
-
 }

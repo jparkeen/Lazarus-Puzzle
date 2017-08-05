@@ -35,8 +35,6 @@ public class LazarusWorld extends JComponent implements Runnable {
 
     int health = 20, lives = 2;
 
-//    int count = 0, frame = 1;
-
     public static  int width = 50, height = 100,jumpTop,endLeft,endRight,startFalling;
 
     private CollisionDetector collision;
@@ -77,137 +75,60 @@ public class LazarusWorld extends JComponent implements Runnable {
         handleMovement(g2);
     }
 
-    public void handleMovement(Graphics g) {
-        int newX, newY;
-        int oldX, oldY;
 
-        if (jump) {
-            if (jumpingLeft) {
-                if (movingUp) {
 
-                    //collision with boundary
-                    newX = lazarus.x;
-                    newY = lazarus.y - Globals.BLOCK_SIZE;
-                    oldY = lazarus.y;
+  public void handleMovement(Graphics g){
+      int newX, newY;
 
-                    if (collision.validateLazarusCollision(newX, newY)) {
-                        lazarus.y = oldY;
+   if(moveRight) {
+      if (movingRight) {
+           newX = lazarus.x + Globals.BLOCK_SIZE;
 
-                    } else {
-                        lazarus.y = newY--;
-                        lazarus.x = newX--;
-                    }
+           // if there is collision then  lazarus moves up one box at a time
+           if (collision.validateLazarusCollision(newX, lazarus.y)) {
+               lazarus.y = lazarus.y - Globals.BLOCK_SIZE;
+               lazarus.x = newX;
+           } else {
+               lazarus.x = newX++;
+           }
+                //start falling
+          while(!collision.validateLazarusCollision(lazarus.x,lazarus.y+Globals.BLOCK_SIZE)){
+                   lazarus.y++;
+          }
 
-                    if (lazarus.y == jumpTop) {
-                        movingUp = false;
-                        return;
-                    }
-                }
-                if (!movingUp) {
-                    lazarus.y++;
+          if (lazarus.x == endRight) {
+              movingRight = false;
+              return;
+          }
 
-                    if (lazarus.y == startY){
-                        jump = false;
-                    }
-                }
+       }
+   }
+    if (moveLeft) {
+        if (movingLeft) {
+            newX = lazarus.x - Globals.BLOCK_SIZE;
+
+            if (collision.validateLazarusCollision(newX, lazarus.y)) {
+                lazarus.y = lazarus.y - Globals.BLOCK_SIZE;
+                lazarus.x = newX;
             }
-            else if (jumpingRight) {
-                if (movingUp) {
+            else {
 
-                    //collision with boundary
-                    newX = lazarus.x;
-                    newY = lazarus.y - Globals.BLOCK_SIZE;
-                    oldY = lazarus.y;
-
-                    if (collision.validateLazarusCollision(newX, newY)) {
-                        lazarus.y = oldY;
-
-                    } else {
-                        lazarus.y = newY--;
-                        lazarus.x = newX++;
-
-                    }
-
-                    if (lazarus.y == jumpTop) {
-
-                        LazarusWorld.movingUp = false;
-                        return;
-                    }
-                }
-                if (!movingUp) {
-                    lazarus.y++;
-                    if (lazarus.y == startY) {
-                        jump = false;
-                    }
-                }
-            } else {
-                if (movingUp) {
-
-
-                    newX = lazarus.x;
-                    newY = lazarus.y - Globals.BLOCK_SIZE;
-                    oldY = lazarus.y;
-
-                    if (collision.validateLazarusCollision(newX, newY)) {
-                        lazarus.y = oldY;
-
-                    } else {
-                        lazarus.y = newY--;
-                    }
-
-                    if (lazarus.y == jumpTop) {
-                        LazarusWorld.movingUp = false;
-                        return;
-                    }
-                }
-                if (!movingUp) {
-                    lazarus.y++;
-                    if (lazarus.y == startY) {
-                        jump = false;
-                    }
-
-
-                }
+                lazarus.x = newX--;
             }
-        }
-        if (moveLeft) {
-            if (movingLeft) {
-                newX = lazarus.x - Globals.BLOCK_SIZE;
-                oldX = lazarus.x;
-                newY = lazarus.y;
-                if (collision.validateLazarusCollision(newX, newY)) {
-                    lazarus.x = oldX;
-                } else {
 
-                    lazarus.x = newX--;
-
-                    if (lazarus.x == endLeft) {
-                        movingLeft = false;
-                        return;
-                    }
-                }
+            while(!collision.validateLazarusCollision(lazarus.x,lazarus.y+Globals.BLOCK_SIZE)){
+                lazarus.y++;
             }
-        }
-        if (moveRight) {
-            if (movingRight) {
-                newX = lazarus.x + Globals.BLOCK_SIZE;
-                oldX = lazarus.x;
-                newY = lazarus.y;
 
-                if (collision.validateLazarusCollision(newX, newY)) {
-
-                    lazarus.x = oldX;
-                } else {
-
-                    lazarus.x = newX++;
-                    if (lazarus.x == endRight) {
-                        movingRight = false;
-                        return;
-                    }
+            if (lazarus.x == endLeft) {
+                    movingLeft = false;
+                    return;
                 }
             }
         }
     }
+
+
 
     private void renderBoxes(Graphics2D g2) {
         for(Box box : boxes) {
