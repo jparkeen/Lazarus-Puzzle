@@ -1,6 +1,7 @@
 package component;
 
 import commons.Globals;
+import commons.MapReader;
 
 public class Box {
 
@@ -14,17 +15,11 @@ public class Box {
      */
     private int y;
 
-    /**
-     * True if the box has not reached the floor
-     */
-    private boolean moving;
-
     private String type;
 
     public Box(int x, int y, String type) {
         this.x = x;
         this.y = y;
-        this.moving = true;
         this.type = type;
     }
 
@@ -38,20 +33,21 @@ public class Box {
         return y + Globals.BLOCK_SIZE;
     }
 
+    public static int getBoxPriority(String boxType) {
+        int boxPriority = 0;
+        if(boxType.equals(MapReader.CARDBOARD_BOX))  boxPriority = 0;
+        if(boxType.equals(MapReader.WOOD_BOX)) boxPriority = 1;
+        if(boxType.equals(MapReader.STONE_BOX)) boxPriority = 2;
+        if(boxType.equals(MapReader.METAL_BOX)) boxPriority = 3;
+        return boxPriority;
+    }
+
     public int getX() {
         return x;
     }
 
     public int getY() {
         return y;
-    }
-
-    public boolean isMoving() {
-        return moving;
-    }
-
-    public void stopMoving() {
-        moving = false;
     }
 
     public String getBoxType() {

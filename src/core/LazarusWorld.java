@@ -9,10 +9,11 @@ import component.Lazarus;
 import commons.MapReader;
 
 import javax.swing.*;
+import javax.swing.text.html.HTMLDocument;
 import java.awt.*;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Random;
+import java.util.Iterator;
 import java.util.Timer;
 
 public class LazarusWorld extends JComponent implements Runnable {
@@ -60,11 +61,19 @@ public class LazarusWorld extends JComponent implements Runnable {
 
     public void paint(Graphics g) {
         Graphics2D g2 = (Graphics2D) g;
+
+        // For background
         renderBackground(g2);
         renderMap(g2);
+
+        // For Lazarus
         drawLazarus(g2, lazarus.x, lazarus.y);
+
+        // For boxes
         moveBoxes();
         renderBoxes(g2);
+
+        // Read key press from user
         handleMovement(g2);
     }
 
@@ -81,7 +90,7 @@ public class LazarusWorld extends JComponent implements Runnable {
                     newY = lazarus.y - Globals.BLOCK_SIZE;
                     oldY = lazarus.y;
 
-                    if (collision.validateCollision(newX, newY, boxes)) {
+                    if (collision.validateLazarusCollision(newX, newY, boxes)) {
                         lazarus.y = oldY;
 
                     } else {
@@ -97,8 +106,8 @@ public class LazarusWorld extends JComponent implements Runnable {
                 if (!movingUp) {
                     lazarus.y++;
 
-                    //if (lazarus.y == startY){
-                    if(collision.validateLazarustoBoxesCollision(boxes, lazarus.x, lazarus.y)){
+                    if (lazarus.y == startY){
+
                         jump = false;
                     }
                 }
@@ -111,7 +120,7 @@ public class LazarusWorld extends JComponent implements Runnable {
                     newY = lazarus.y - Globals.BLOCK_SIZE;
                     oldY = lazarus.y;
 
-                    if (collision.validateCollision(newX, newY, boxes)) {
+                    if (collision.validateLazarusCollision(newX, newY, boxes)) {
                         lazarus.y = oldY;
 
                     } else {
@@ -140,7 +149,7 @@ public class LazarusWorld extends JComponent implements Runnable {
                     newY = lazarus.y - Globals.BLOCK_SIZE;
                     oldY = lazarus.y;
 
-                    if (collision.validateCollision(newX, newY, boxes)) {
+                    if (collision.validateLazarusCollision(newX, newY, boxes)) {
                         lazarus.y = oldY;
 
                     } else {
@@ -168,20 +177,17 @@ public class LazarusWorld extends JComponent implements Runnable {
                 newX = lazarus.x - Globals.BLOCK_SIZE;
                 oldX = lazarus.x;
                 newY = lazarus.y;
-                if (collision.validateCollision(newX, newY, boxes)) {
+                if (collision.validateLazarusCollision(newX, newY, boxes)) {
+                    lazarus.x = oldX;
+                } else {
 
-                        lazarus.y = lazarus.y - Globals.BLOCK_SIZE;
-
-                }
-
-                else {
                     lazarus.x = newX--;
 
                     if (lazarus.x == endLeft) {
                         movingLeft = false;
                         return;
                     }
-                    if(collision.validateCollision(lazarus.x,lazarus.y,boxes)){
+                    if(collision.validateLazarusCollision(lazarus.x,lazarus.y,boxes)){
 
                     }
                 }
@@ -192,11 +198,11 @@ public class LazarusWorld extends JComponent implements Runnable {
                 newX = lazarus.x + Globals.BLOCK_SIZE;
                 oldX = lazarus.x;
                 newY = lazarus.y;
-                if (collision.validateCollision(newX, newY, boxes)) {
 
-                    lazarus.y = lazarus.y - Globals.BLOCK_SIZE;
-                }
-                else {
+                if (collision.validateLazarusCollision(newX, newY, boxes)) {
+                    lazarus.x = oldX;
+                } else {
+
                     lazarus.x = newX++;
                     if (lazarus.x == endRight) {
                         movingRight = false;
@@ -207,42 +213,68 @@ public class LazarusWorld extends JComponent implements Runnable {
         }
     }
 
-    public void renderBoxes(Graphics2D g2) {
-        Image image = null;
+    private void renderBoxes(Graphics2D g2) {
         for(Box box : boxes) {
-            if(box.getBoxType().equals(MapReader.CARDBOARD_BOX)) {
-                image = Toolkit.getDefaultToolkit().getImage("resources/boxes/cardbox.png");
-            } else if(box.getBoxType().equals(MapReader.WOOD_BOX)) {
-                image = Toolkit.getDefaultToolkit().getImage("resources/boxes/woodbox.png");
-            } else if(box.getBoxType().equals(MapReader.STONE_BOX)) {
-                image = Toolkit.getDefaultToolkit().getImage("resources/boxes/stonebox.png");
-            } else if(box.getBoxType().equals(MapReader.METAL_BOX)) {
-                image = Toolkit.getDefaultToolkit().getImage("resources/boxes/metalbox.png");
-            } else {
-                System.err.println("Unknown Block Type : " + box.getBoxType());
-            }
-            g2.drawImage(image, box.getX(), box.getY(), Globals.BLOCK_SIZE, Globals.BLOCK_SIZE, this);
-            g2.finalize();
+            renderBox(g2, box.getBoxType(), box.getX(), box.getY());
         }
     }
 
+    private void renderBox(Graphics2D g2, String boxType, int newX, int newY) {
+        Image image = null;
+        if(boxType.equals(MapReader.CARDBOARD_BOX)) {
+            image = Toolkit.getDefaultToolkit().getImage("resources/boxes/cardbox.png");
+        } else if(boxType.equals(MapReader.WOOD_BOX)) {
+            image = Toolkit.getDefaultToolkit().getImage("resources/boxes/woodbox.png");
+        } else if(boxType.equals(MapReader.STONE_BOX)) {
+            image = Toolkit.getDefaultToolkit().getImage("resources/boxes/stonebox.png");
+        } else if(boxType.equals(MapReader.METAL_BOX)) {
+            image = Toolkit.getDefaultToolkit().getImage("resources/boxes/metalbox.png");
+        } else {
+            System.err.println("Unknown Block Type : " + boxType);
+        }
+        g2.drawImage(image, newX, newY, Globals.BLOCK_SIZE, Globals.BLOCK_SIZE, this);
+        g2.finalize();
+    }
+
     public void moveBoxes() {
-        // Stop moving boxes that have collided with the wall
-        for(Box box: boxes) {
+        Iterator<Box> itr = boxes.iterator();
+        Box box;
+        while(itr.hasNext()) {
+            box = itr.next();
             if (collision.validateBoxToWallCollision(box)) {
-                box.stopMoving();
-                if(box.getBoxType().equals(MapReader.CARDBOARD_BOX)) {
-                    map[box.getY() / Globals.BLOCK_SIZE][box.getX() / Globals.BLOCK_SIZE] = MapReader.CARDBOARD_BOX;
-                } else if(box.getBoxType().equals(MapReader.WOOD_BOX)) {
-                    map[box.getY() / Globals.BLOCK_SIZE][box.getX() / Globals.BLOCK_SIZE] = MapReader.WOOD_BOX;
-                } else if(box.getBoxType().equals(MapReader.STONE_BOX)) {
-                    map[box.getY() / Globals.BLOCK_SIZE][box.getX() / Globals.BLOCK_SIZE] = MapReader.STONE_BOX;
-                } else if(box.getBoxType().equals(MapReader.METAL_BOX)) {
-                    map[box.getY() / Globals.BLOCK_SIZE][box.getX() / Globals.BLOCK_SIZE] = MapReader.METAL_BOX;
-                }
-                continue;
+                map[box.getY() / Globals.BLOCK_SIZE][box.getX() / Globals.BLOCK_SIZE] = box.getBoxType();
+                itr.remove();
+            } else if (collision.validateBoxToBoxCollision(box)) {
+                // If there is box to box collision there are three possiblilities
+                // 1. Heavy box (Priority higher) is on top of light box (Priority lower)
+                // 2. Light box (Priority lower) is on top of heavy box (Priority higher)
+                // 3. Both boxes of same type (same priority lower)
+                stopBoxToBoxOnCollision(box, itr);
+            } else {
+                box.moveBoxDown();
             }
-            box.moveBoxDown();
+        }
+    }
+
+    /**
+     * At this point the collision has already happned with another and we need to take some action.
+     * Stops the box if it collides with another stationary box already on the floor
+     */
+    private void stopBoxToBoxOnCollision(Box currentBox, Iterator<Box> itr) {
+        int newX = currentBox.getX();
+        int newY = currentBox.getNextBoxDownPosition();
+        String bottomBoxType = collision.getMapping(newX, newY);
+        // Get box priorities
+        int bottomBoxPriority = Box.getBoxPriority(bottomBoxType);
+        int currentBoxPriority = currentBox.getBoxPriority(currentBox.getBoxType());
+
+        if(bottomBoxPriority >= currentBoxPriority) {
+            // Dont break bottom box and stop current box
+            map[currentBox.getY() / Globals.BLOCK_SIZE][currentBox.getX() / Globals.BLOCK_SIZE] = currentBox.getBoxType();
+            itr.remove();
+        } else {
+            // Break bottom box
+            map[newY / Globals.BLOCK_SIZE][newX / Globals.BLOCK_SIZE] = MapReader.SPACE;
         }
     }
 
@@ -290,6 +322,9 @@ public class LazarusWorld extends JComponent implements Runnable {
                     startX = x;
                     startY = y;
                     continue;
+                }
+                if (MapReader.ALL_BOX_SET.contains(value)) {
+                    renderBox(g2, value, x , y);
                 }
             }
         }
