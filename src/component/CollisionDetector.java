@@ -4,7 +4,6 @@ import commons.Globals;
 import commons.MapReader;
 
 import java.io.IOException;
-import java.util.ArrayList;
 
 public class CollisionDetector {
 
@@ -14,9 +13,9 @@ public class CollisionDetector {
         this.map = map;
     }
 
-    public boolean validateLazarusCollision(int newX, int newY, ArrayList<Box> boxes) {
+    public boolean validateLazarusCollision(int newX, int newY) {
         return validateLazarusToBoundaryCollision(newX, newY) || validateLazarusToWallCollision(newX, newY)
-                || validateLazarustoBoxesCollision(boxes, newX, newY);
+                || validateLazarustoBoxesCollision(newX, newY);
     }
 
     private boolean validateLazarusToBoundaryCollision(int newX, int newY){
@@ -31,11 +30,12 @@ public class CollisionDetector {
         return false;
     }
 
-    private boolean validateLazarustoBoxesCollision(ArrayList<Box> boxes, int newX, int newY){
-        for(Box box : boxes) {
-            if (newX == box.getX() && newY == box.getY()) {
-                return true;
-            }
+    private boolean validateLazarustoBoxesCollision(int newX, int newY){
+        String value = getMapping(newX, newY);
+
+        if(value.equals(MapReader.CARDBOARD_BOX) || value.equals(MapReader.WOOD_BOX)
+                || value.equals(MapReader.STONE_BOX) || value.equals(MapReader.METAL_BOX)) {
+            return true;
         }
         return false;
     }
