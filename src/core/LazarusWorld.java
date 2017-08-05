@@ -89,7 +89,7 @@ public class LazarusWorld extends JComponent implements Runnable {
                     newY = lazarus.y - Globals.BLOCK_SIZE;
                     oldY = lazarus.y;
 
-                    if (collision.validateLazarusCollision(newX, newY, boxes)) {
+                    if (collision.validateLazarusCollision(newX, newY)) {
                         lazarus.y = oldY;
 
                     } else {
@@ -116,7 +116,7 @@ public class LazarusWorld extends JComponent implements Runnable {
                     newY = lazarus.y - Globals.BLOCK_SIZE;
                     oldY = lazarus.y;
 
-                    if (collision.validateLazarusCollision(newX, newY, boxes)) {
+                    if (collision.validateLazarusCollision(newX, newY)) {
                         lazarus.y = oldY;
 
                     } else {
@@ -145,7 +145,7 @@ public class LazarusWorld extends JComponent implements Runnable {
                     newY = lazarus.y - Globals.BLOCK_SIZE;
                     oldY = lazarus.y;
 
-                    if (collision.validateLazarusCollision(newX, newY, boxes)) {
+                    if (collision.validateLazarusCollision(newX, newY)) {
                         lazarus.y = oldY;
 
                     } else {
@@ -170,7 +170,7 @@ public class LazarusWorld extends JComponent implements Runnable {
                 newX = lazarus.x - Globals.BLOCK_SIZE;
                 oldX = lazarus.x;
                 newY = lazarus.y;
-                if (collision.validateLazarusCollision(newX, newY, boxes)) {
+                if (collision.validateLazarusCollision(newX, newY)) {
                     lazarus.x = oldX;
                 } else {
                     lazarus.x = newX--;
@@ -186,7 +186,7 @@ public class LazarusWorld extends JComponent implements Runnable {
                 newX = lazarus.x + Globals.BLOCK_SIZE;
                 oldX = lazarus.x;
                 newY = lazarus.y;
-                if (collision.validateLazarusCollision(newX, newY, boxes)) {
+                if (collision.validateLazarusCollision(newX, newY)) {
                     lazarus.x = oldX;
                 } else {
                     lazarus.x = newX++;
