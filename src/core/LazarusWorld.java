@@ -107,7 +107,6 @@ public class LazarusWorld extends JComponent implements Runnable {
                     lazarus.y++;
 
                     if (lazarus.y == startY){
-
                         jump = false;
                     }
                 }
@@ -164,7 +163,6 @@ public class LazarusWorld extends JComponent implements Runnable {
                 if (!movingUp) {
                     lazarus.y++;
                     if (lazarus.y == startY) {
-
                         jump = false;
                     }
 
