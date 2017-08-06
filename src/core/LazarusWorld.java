@@ -1,20 +1,23 @@
 package core;
 
 import commons.Globals;
+import commons.MapReader;
 import commons.SpawnBoxes;
 import component.Box;
 import component.CollisionDetector;
 import component.KeysControl;
 import component.Lazarus;
-import commons.MapReader;
 
-import javax.swing.*;
-import javax.swing.text.html.HTMLDocument;
-import java.awt.*;
+import javax.swing.JComponent;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
+import java.awt.Image;
+import java.awt.Toolkit;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.Timer;
+import java.util.List;
 
 public class LazarusWorld extends JComponent implements Runnable {
 
@@ -26,10 +29,7 @@ public class LazarusWorld extends JComponent implements Runnable {
 
     private Lazarus lazarus;
 
-//    private Box box;
-
-
-    private ArrayList<Box> boxes;
+    private List<Box> boxes;
 
     public  static int startX,startY;
 
@@ -43,7 +43,7 @@ public class LazarusWorld extends JComponent implements Runnable {
 
     public LazarusWorld() throws IOException {
         this.map = MapReader.readMap(Globals.MAP1_FILENAME);
-        this.boxes = new ArrayList<Box>(1000);
+        this.boxes = new ArrayList<Box>();
 
         setFocusable(true);
 
@@ -69,71 +69,70 @@ public class LazarusWorld extends JComponent implements Runnable {
         drawLazarus(g2, lazarus.x, lazarus.y);
 
         // For boxes
-        moveBoxes();
-        renderBoxes(g2);
+        synchronized (boxes) {
+            moveBoxes();
+            renderBoxes(g2);
+        }
 
         // Read key press from user
         handleMovement(g2);
     }
 
+    public void handleMovement(Graphics g){
+        int newX;
+        if(moveRight) {
 
+            if (movingRight) {
+                newX = lazarus.x + Globals.BLOCK_SIZE;
 
-  public void handleMovement(Graphics g){
-      int newX;
+                // lazarus can't move up if there is more than one box
+                if(collision.validateLazarusCollision(newX,lazarus.y - Globals.BLOCK_SIZE)){
+                    movingRight = false;
+                    return;
+                }
 
-   if(moveRight) {
-      if (movingRight) {
-           newX = lazarus.x + Globals.BLOCK_SIZE;
+                // if there is collision then lazarus moves up one box at a time
+                if (collision.validateLazarusCollision(newX, lazarus.y)) {
+                    lazarus.y = lazarus.y - Globals.BLOCK_SIZE;
+                    lazarus.x = newX;
+                } else {
+                    lazarus.x = newX++;
+                }
 
-           // lazarus can't move up if there is more than one box
-           if(collision.validateLazarusCollision(newX,lazarus.y - Globals.BLOCK_SIZE)){
-               movingRight = false;
-               return;
-
-           }
-          // if there is collision then  lazarus moves up one box at a time
-           if (collision.validateLazarusCollision(newX, lazarus.y)) {
-               lazarus.y = lazarus.y - Globals.BLOCK_SIZE;
-               lazarus.x = newX;
-           } else {
-               lazarus.x = newX++;
-           }
                 //start falling
-          while(!collision.validateLazarusCollision(lazarus.x,lazarus.y+Globals.BLOCK_SIZE)){
-                   lazarus.y++;
-          }
+                while(!collision.validateLazarusCollision(lazarus.x,lazarus.y+Globals.BLOCK_SIZE)){
+                    lazarus.y++;
+                }
 
-          if (lazarus.x == endRight) {
-              movingRight = false;
-              return;
-          }
-
-       }
-   }
-    if (moveLeft) {
-        if (movingLeft) {
-            newX = lazarus.x - Globals.BLOCK_SIZE;
-
-            if(collision.validateLazarusCollision(newX,lazarus.y - Globals.BLOCK_SIZE)){
-                movingLeft = false;
-                return;
-
+                if (lazarus.x == endRight) {
+                    movingRight = false;
+                    return;
+                }
             }
+        }
 
-            if (collision.validateLazarusCollision(newX, lazarus.y)) {
-                lazarus.y = lazarus.y - Globals.BLOCK_SIZE;
-                lazarus.x = newX;
-            }
-            else {
+        if (moveLeft) {
 
-                lazarus.x = newX--;
-            }
+            if (movingLeft) {
+                newX = lazarus.x - Globals.BLOCK_SIZE;
 
-            while(!collision.validateLazarusCollision(lazarus.x,lazarus.y+Globals.BLOCK_SIZE)){
-                lazarus.y++;
-            }
+                if(collision.validateLazarusCollision(newX,lazarus.y - Globals.BLOCK_SIZE)){
+                    movingLeft = false;
+                    return;
+                }
 
-            if (lazarus.x == endLeft) {
+                if (collision.validateLazarusCollision(newX, lazarus.y)) {
+                    lazarus.y = lazarus.y - Globals.BLOCK_SIZE;
+                    lazarus.x = newX;
+                } else {
+                    lazarus.x = newX--;
+                }
+
+                while(!collision.validateLazarusCollision(lazarus.x,lazarus.y+Globals.BLOCK_SIZE)){
+                    lazarus.y++;
+                }
+
+                if (lazarus.x == endLeft) {
                     movingLeft = false;
                     return;
                 }
@@ -141,10 +140,8 @@ public class LazarusWorld extends JComponent implements Runnable {
         }
     }
 
-
-
     private void renderBoxes(Graphics2D g2) {
-        for(Box box : boxes) {
+        for (Box box : boxes) {
             renderBox(g2, box.getBoxType(), box.getX(), box.getY());
         }
     }
@@ -304,7 +301,7 @@ public class LazarusWorld extends JComponent implements Runnable {
 
          // Spawn boxes by using timer
         Timer timer = new Timer();
-        timer.schedule(new SpawnBoxes(boxes, lazarus), 0, 3000);
+        timer.schedule(new SpawnBoxes(boxes, lazarus), 0, 2000);
     }
 
 }
