@@ -100,7 +100,7 @@ public class LazarusWorld extends JComponent implements Runnable {
                 }
 
                 //start falling
-
+                
                 while(!collision.validateLazarusCollision(lazarus.x,lazarus.y+Globals.BLOCK_SIZE)){
                     lazarus.y++;
                 }
@@ -281,7 +281,7 @@ public class LazarusWorld extends JComponent implements Runnable {
 
     private void drawLazarus(Graphics2D g2, int x, int y) {
         if (collision.validateLazarustoBoxesCollision(lazarus.x, lazarus.y)) {
-            Image image = Toolkit.getDefaultToolkit().getImage("resources/lazarus/Lazarus_squished.png");
+            Image image = Toolkit.getDefaultToolkit().getImage("resources/lazarus/Lazarus_squished.gif");
             g2.drawImage(image, x, y, Globals.BLOCK_SIZE, Globals.BLOCK_SIZE, this);
             g2.finalize();
         } else {
