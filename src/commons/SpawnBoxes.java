@@ -4,23 +4,25 @@ import component.Box;
 import component.Lazarus;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
 import java.util.TimerTask;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 public class SpawnBoxes extends TimerTask {
 
-    private ArrayList<Box> boxes;
+    private List<Box> boxes;
+
     private int boxarray[] = new int[100];
+
     private Lazarus lazarus;
+
     int count = 0;
-
-
-
 
     private static final String[] ALL_BOXES  = {MapReader.CARDBOARD_BOX, MapReader.WOOD_BOX,
             MapReader.STONE_BOX, MapReader.METAL_BOX};
 
-    public SpawnBoxes(ArrayList<Box> boxes, Lazarus lazarus) {
+    public SpawnBoxes(List<Box> boxes, Lazarus lazarus) {
         this.boxes = boxes;
         this.lazarus = lazarus;
 
@@ -39,11 +41,9 @@ public class SpawnBoxes extends TimerTask {
         int nextBoxIndex = boxarray[count];
         String nextBoxType = ALL_BOXES[nextBoxIndex];
 
-        boxes.add(new Box(0,700, nextBoxType));
-        boxes.add(new Box(lazarus.x, 0, boxType));
-
-
-
-
+        synchronized (boxes) {
+            boxes.add(new Box(0,700, nextBoxType));
+            boxes.add(new Box(lazarus.x, 0, boxType));
+        }
     }
 }
