@@ -62,6 +62,7 @@ public class LazarusWorld extends JComponent implements Runnable {
 
         // For background
         renderBackground(g2);
+        renderLevel(g2);
         renderMap(g2);
 
         // For Lazarus
@@ -209,6 +210,12 @@ public class LazarusWorld extends JComponent implements Runnable {
     public void renderBackground(Graphics2D g2) {
         Image image = Toolkit.getDefaultToolkit().getImage("resources/Background.png");
         g2.drawImage(image, 0, 0, Globals.BOARD_SIZE, Globals.BOARD_SIZE, this);
+        g2.finalize();
+    }
+
+    public void renderLevel(Graphics2D g2) {
+        Image image = Toolkit.getDefaultToolkit().getImage("resources/levels/level1.png");
+        g2.drawImage(image, 250, 70, 300, 115, this);
         g2.finalize();
     }
 
