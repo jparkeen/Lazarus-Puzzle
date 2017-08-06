@@ -31,6 +31,8 @@ public class LazarusWorld extends JComponent implements Runnable {
 
     private List<Box> boxes;
 
+    private SpawnBoxes spawnBoxes;
+
     public  static int startX,startY;
 
     int health = 20, lives = 2;
@@ -55,6 +57,8 @@ public class LazarusWorld extends JComponent implements Runnable {
 
         this.keysControl = new KeysControl(this.lazarus);
         addKeyListener(keysControl);
+
+        this.spawnBoxes = new SpawnBoxes(boxes, lazarus);
     }
 
     public void paint(Graphics g) {
@@ -73,9 +77,15 @@ public class LazarusWorld extends JComponent implements Runnable {
             moveBoxes();
             renderBoxes(g2);
         }
+        // Render next box
+        renderNextBox(g2);
 
         // Read key press from user
         handleMovement(g2);
+    }
+
+    private void renderNextBox(Graphics2D g2) {
+        renderBox(g2, spawnBoxes.getNextBoxType(), 0, 700);
     }
 
     public void handleMovement(Graphics g){
@@ -301,7 +311,7 @@ public class LazarusWorld extends JComponent implements Runnable {
 
          // Spawn boxes by using timer
         Timer timer = new Timer();
-        timer.schedule(new SpawnBoxes(boxes, lazarus), 0, 2000);
+        timer.schedule(spawnBoxes, 0, 2000);
     }
 
 }
