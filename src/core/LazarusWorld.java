@@ -29,6 +29,8 @@ public class LazarusWorld extends JComponent implements Runnable {
 
     private Lazarus lazarus;
 
+    private int level = 1;
+
     private List<Box> boxes;
 
     private SpawnBoxes spawnBoxes;
@@ -59,6 +61,7 @@ public class LazarusWorld extends JComponent implements Runnable {
         addKeyListener(keysControl);
 
         this.spawnBoxes = new SpawnBoxes(boxes, lazarus);
+
     }
 
     public void paint(Graphics g) {
@@ -219,7 +222,7 @@ public class LazarusWorld extends JComponent implements Runnable {
     }
 
     public void renderLevel(Graphics2D g2) {
-        Image image = Toolkit.getDefaultToolkit().getImage("resources/levels/level1.png");
+        Image image = Toolkit.getDefaultToolkit().getImage("resources/levels/level" + level + ".png");
         g2.drawImage(image, 250, 70, 300, 115, this);
         g2.finalize();
     }

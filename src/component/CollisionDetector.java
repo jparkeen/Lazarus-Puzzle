@@ -18,27 +18,36 @@ public class CollisionDetector {
                 || validateLazarustoBoxesCollision(newX, newY);
     }
 
-    private boolean validateLazarusToBoundaryCollision(int newX, int newY){
+    private boolean validateLazarusToBoundaryCollision(int newX, int newY) {
         return (newX < 0 || newX > Globals.BOARD_SIZE - Globals.BLOCK_SIZE || newY < 0);
     }
 
-    private boolean validateLazarusToWallCollision(int newX, int newY){
+    private boolean validateLazarusToWallCollision(int newX, int newY) {
         String value = getMapping(newX, newY);
-        if(value.equals(MapReader.WALL)) {
+        if (value.equals(MapReader.WALL)) {
             return true;
         }
         return false;
     }
 
-    public boolean validateLazarustoBoxesCollision(int newX, int newY){
+    public boolean validateLazarustoBoxesCollision(int newX, int newY) {
         String value = getMapping(newX, newY);
 
-        if(value.equals(MapReader.CARDBOARD_BOX) || value.equals(MapReader.WOOD_BOX)
+        if (value.equals(MapReader.CARDBOARD_BOX) || value.equals(MapReader.WOOD_BOX)
                 || value.equals(MapReader.STONE_BOX) || value.equals(MapReader.METAL_BOX)) {
             return true;
         }
         return false;
     }
+
+    public boolean validateLazarustoStopButtonCollision(int newX, int newY) {
+        String value = getMapping(newX, newY);
+        if (value.equals(MapReader.STOP)) {
+            return true;
+        }
+        return false;
+    }
+
 
     /**
      * Box -> Map
