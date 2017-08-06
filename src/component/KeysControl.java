@@ -32,20 +32,17 @@ public class KeysControl extends KeyAdapter {
             LazarusWorld.movingRight = true;
             LazarusWorld.moveRight = true;
         }
-
         }
 
 
-    public void keyReleased(KeyEvent e){
+    public void keyReleased(KeyEvent e) {
         int keysCode = e.getKeyCode();
 
-        if (keysCode == KeyEvent.VK_LEFT){
+        if (keysCode == KeyEvent.VK_LEFT) {
             LazarusWorld.moveLeft = false;
         }
-        if(keysCode == KeyEvent.VK_RIGHT){
+        if (keysCode == KeyEvent.VK_RIGHT) {
             LazarusWorld.moveRight = false;
         }
-
     }
-
 }

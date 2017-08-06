@@ -30,7 +30,7 @@ public class CollisionDetector {
         return false;
     }
 
-    private boolean validateLazarustoBoxesCollision(int newX, int newY){
+    public boolean validateLazarustoBoxesCollision(int newX, int newY){
         String value = getMapping(newX, newY);
 
         if(value.equals(MapReader.CARDBOARD_BOX) || value.equals(MapReader.WOOD_BOX)
