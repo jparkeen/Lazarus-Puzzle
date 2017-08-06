@@ -23,7 +23,7 @@ public class LazarusWorld extends JComponent implements Runnable {
 
     private Thread thread;
 
-    public static boolean moveLeft,moveRight,jump ,movingUp,movingLeft,movingRight,jumpingLeft,jumpingRight,falling;
+    public static boolean moveLeft,moveRight,movingLeft,movingRight;
 
     private KeysControl keysControl;
 
@@ -37,8 +37,8 @@ public class LazarusWorld extends JComponent implements Runnable {
 
     int health = 20, lives = 2;
 
-    public static  int width = 50, height = 100,jumpTop,endLeft,endRight,startFalling;
-
+    public static  int width = 50, endLeft,endRight;
+    
     private CollisionDetector collision;
 
     private String[][] map;
@@ -89,70 +89,63 @@ public class LazarusWorld extends JComponent implements Runnable {
     }
 
     public void handleMovement(Graphics g){
+
         int newX;
-        if(moveRight) {
-
-            if (movingRight) {
-                newX = lazarus.x + Globals.BLOCK_SIZE;
-
-                // lazarus can't move up if there is more than one box
-                if(collision.validateLazarusCollision(newX,lazarus.y - Globals.BLOCK_SIZE)){
-                    movingRight = false;
-                    return;
-                }
-
-                // if there is collision then lazarus moves up one box at a time
-                if (collision.validateLazarusCollision(newX, lazarus.y)) {
-                    lazarus.y = lazarus.y - Globals.BLOCK_SIZE;
-                    lazarus.x = newX;
-                } else {
-                    lazarus.x = newX++;
-                }
-
-                //start falling
-                
-                while(!collision.validateLazarusCollision(lazarus.x,lazarus.y+Globals.BLOCK_SIZE)){
-                    lazarus.y++;
-                }
-
-
-                if (lazarus.x == endRight) {
-                    movingRight = false;
-                    return;
-                }
-            }
+        // check if there is any boxes underneath the lazarus if not it will keep falling
+        while (!collision.validateLazarusCollision(lazarus.x, lazarus.y + Globals.BLOCK_SIZE)) {
+            lazarus.y++;
         }
 
-        if (moveLeft) {
+            if (moveRight) {
 
-            if (movingLeft) {
-                newX = lazarus.x - Globals.BLOCK_SIZE;
+                if (movingRight) {
+                    newX = lazarus.x + Globals.BLOCK_SIZE;
 
-                if(collision.validateLazarusCollision(newX,lazarus.y - Globals.BLOCK_SIZE)){
-                    movingLeft = false;
-                    return;
-                }
+                    // lazarus can't move up if there is more than one box
+                    if (collision.validateLazarusCollision(newX, lazarus.y - Globals.BLOCK_SIZE)) {
+                        movingRight = false;
+                        return;
+                    }
 
-                if (collision.validateLazarusCollision(newX, lazarus.y)) {
-                    lazarus.y = lazarus.y - Globals.BLOCK_SIZE;
-                    lazarus.x = newX;
-                } else {
-                    lazarus.x = newX--;
-                }
+                    // if there is collision then lazarus moves up one box at a time
+                    if (collision.validateLazarusCollision(newX, lazarus.y)) {
+                        lazarus.y = lazarus.y - Globals.BLOCK_SIZE;
+                        lazarus.x = newX;
+                    } else {
+                        lazarus.x = newX++;
+                    }
 
-                while(!collision.validateLazarusCollision(lazarus.x,lazarus.y+Globals.BLOCK_SIZE)){
-                    lazarus.y++;
-                }
-
-                if (lazarus.x == endLeft) {
-                    movingLeft = false;
-                    return;
+                    if (lazarus.x == endRight) {
+                        movingRight = false;
+                        return;
+                    }
                 }
             }
-        }
 
-    }
+                if (moveLeft) {
 
+                    if (movingLeft) {
+                        newX = lazarus.x - Globals.BLOCK_SIZE;
+
+                        if (collision.validateLazarusCollision(newX, lazarus.y - Globals.BLOCK_SIZE)) {
+                            movingLeft = false;
+                            return;
+                        }
+
+                        if (collision.validateLazarusCollision(newX, lazarus.y)) {
+                            lazarus.y = lazarus.y - Globals.BLOCK_SIZE;
+                            lazarus.x = newX;
+                        } else {
+                            lazarus.x = newX--;
+                        }
+
+                        if (lazarus.x == endLeft) {
+                            movingLeft = false;
+                            return;
+                        }
+                    }
+                }
+            }
 
     private void renderBoxes(Graphics2D g2) {
         for (Box box : boxes) {
