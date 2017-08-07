@@ -12,4 +12,6 @@ public class Globals {
 
     public static String MAP1_FILENAME = "maps/map1.csv";
 
+    public static String MAP2_FILENAME = "maps/map2.csv";
+
 }

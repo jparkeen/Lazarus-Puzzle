@@ -46,7 +46,8 @@ public class LazarusWorld extends JComponent implements Runnable {
     private String[][] map;
 
     public LazarusWorld() throws IOException {
-        this.map = MapReader.readMap(Globals.MAP1_FILENAME);
+
+        this.map = MapReader.readMap("maps/map" + level + ".csv");
         this.boxes = new ArrayList<Box>();
 
         setFocusable(true);
@@ -61,6 +62,7 @@ public class LazarusWorld extends JComponent implements Runnable {
         addKeyListener(keysControl);
 
         this.spawnBoxes = new SpawnBoxes(boxes, lazarus);
+
 
     }
 
@@ -84,19 +86,43 @@ public class LazarusWorld extends JComponent implements Runnable {
         renderNextBox(g2);
 
         // Read key press from user
-        handleMovement(g2);
+        try {
+            handleMovement(g2);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     private void renderNextBox(Graphics2D g2) {
         renderBox(g2, spawnBoxes.getNextBoxType(), 0, 700);
     }
 
-    public void handleMovement(Graphics g){
+    public void handleMovement(Graphics g) throws IOException {
 
         int newX;
         // check if there is any boxes underneath the lazarus if not it will keep falling
         while (!collision.validateLazarusCollision(lazarus.x, lazarus.y + Globals.BLOCK_SIZE)) {
             lazarus.y++;
+        }
+        if(collision.validateLazarustoStopButtonCollision(lazarus.x, lazarus.y)){
+            level = 2;
+            this.map = MapReader.readMap("maps/map" + level + ".csv");
+            this.boxes = new ArrayList<Box>();
+            this.spawnBoxes = new SpawnBoxes(boxes, lazarus);
+
+            setFocusable(true);
+
+            collision = new CollisionDetector(map);
+
+            findStartPosition();
+
+            lazarus = new Lazarus(startX, startY, health, lives,this);
+
+            this.keysControl = new KeysControl(this.lazarus);
+            addKeyListener(keysControl);
+
+
+
         }
 
             if (moveRight) {
